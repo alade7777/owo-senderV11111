@@ -65,5 +65,5 @@ Ce fichier sert de base de données locale. Il est mis à jour automatiquement l
 ─────────────────────────────
 ✉️ CONTACT :
 ─────────────────────────────
-Développeur : [Ton nom ici]
+Développeur : [ALADE BAKARY]
 Projet initié : [Avril 2025]
