@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="sendTitle">Envoyer de l'argent - Transfert Mobile Money</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #555;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn svg {
+      fill: none;
+      stroke: #555;
+      stroke-width: 2;
+      transition: transform 0.2s ease;
+    }
+
+    .back-btn:hover svg {
+      transform: translateX(-3px);
+      stroke: #007bff;
+    }
+
+    .back-btn:hover {
+      color: #007bff;
+    }
+
+    .btn-pill {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      transform: translateY(0);
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+      animation: pulse 2s infinite;
+    }
+
+    .btn-pill:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+      animation: none;
+    }
+
+    .btn-pill:active {
+      transform: translateY(1px);
+    }
+
+    .login-card {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      animation: slideUp 0.5s ease-out;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      border: 2px solid #e9ecef;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .form-label {
+      transition: all 0.3s ease;
+      color: #495057;
+    }
+
+    .form-control:focus + .form-label,
+    .form-select:focus + .form-label {
+      color: #007bff;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      background-image: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animation pour les champs du formulaire */
+    .mb-3 {
+      animation: fadeIn 0.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    .mb-3:nth-child(1) { animation-delay: 0.1s; }
+    .mb-3:nth-child(2) { animation-delay: 0.2s; }
+    .mb-3:nth-child(3) { animation-delay: 0.3s; }
+    .mb-3:nth-child(4) { animation-delay: 0.4s; }
+    .mb-3:nth-child(5) { animation-delay: 0.5s; }
+    .mb-3:nth-child(6) { animation-delay: 0.6s; }
+    .mb-3:nth-child(7) { animation-delay: 0.7s; }
+    .mb-3:nth-child(8) { animation-delay: 0.8s; }
+    .mb-3:nth-child(9) { animation-delay: 0.9s; }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animation pour le toast */
+    .toast {
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Animation du bouton "Envoyer maintenant" */
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+      }
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+      }
+    }
+  </style>
+</head>
+<body class="login-page">
+
+  <!-- Formulaire d'envoi -->
+  <div class="login-card mt-4">
+    <!-- Bouton Retour -->
+    <div class="text-start mb-3">
+      <a href="index.html" class="back-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        <span data-i18n="back">Retour</span>
+      </a>
+    </div>
+
+    <h2 class="mb-4 text-center" data-i18n="formTitle">Transfert Mobile Money</h2>
+    <form id="sendForm">
+      <div class="mb-3">
+        <label for="pays" class="form-label" data-i18n="countryLabel">Pays de destination</label>
+        <select id="pays" class="form-select" required>
+          <option value="" data-i18n="selectCountry">Sélectionner un pays</option>
+          <option value="Bénin" data-i18n="benin">🇧🇯 Bénin</option>
+          <option value="Congo" data-i18n="congo">🇨🇬 Congo</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="envoyeurNom" class="form-label" data-i18n="senderNameLabel">Nom de l'envoyeur</label>
+        <input type="text" id="envoyeurNom" class="form-control" data-i18n-placeholder="senderNamePlaceholder" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="envoyeurNumero" class="form-label" data-i18n="senderPhoneLabel">Numéro de l'envoyeur</label>
+        <input type="tel" id="envoyeurNumero" class="form-control" data-i18n-placeholder="senderPhonePlaceholder" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="montant" class="form-label" data-i18n="amountLabel">Montant à envoyer</label>
+        <input type="number" id="montant" class="form-control" data-i18n-placeholder="amountPlaceholder" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="total" class="form-label" data-i18n="totalLabel">Total à payer (frais inclus)</label>
+        <input type="text" id="total" class="form-control" value="0 FCFA" disabled />
+      </div>
+
+      <div class="mb-3">
+        <label for="operateur" class="form-label" data-i18n="operatorLabel">Opérateur Mobile</label>
+        <select id="operateur" class="form-select" required>
+          <option value="" data-i18n="selectOperator">Choisir un opérateur</option>
+          <option value="MTN" data-i18n="mtn">MTN</option>
+          <option value="Moov" data-i18n="moov">Moov</option>
+          <option value="Airtel" data-i18n="airtel">Airtel</option>
+          <option value="Orange" data-i18n="orange">Orange</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="numero" class="form-label" data-i18n="phoneLabel">Numéro du destinataire</label>
+        <input type="tel" id="numero" class="form-control" data-i18n-placeholder="phonePlaceholder" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="nom" class="form-label" data-i18n="nameLabel">Nom du destinataire</label>
+        <input type="text" id="nom" class="form-control" data-i18n-placeholder="namePlaceholder" required />
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn-pill" data-i18n="sendNow">Envoyer maintenant</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Toast succès -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" data-i18n="sendSuccess">Transfert effectué avec succès !</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script src="lang.js"></script>
+  <script src="dark-mode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    if (!localStorage.getItem("userEmail")) {
+      window.location.href = "connexion.html";
+    }
+
+    // Pré-remplir les informations de l'envoyeur
+    const userName = localStorage.getItem("userName");
+    const userPhone = localStorage.getItem("userPhone");
+    const userCountry = localStorage.getItem("userCountry");
+
+    if (userName) {
+      document.getElementById("envoyeurNom").value = userName;
+    }
+    if (userPhone) {
+      document.getElementById("envoyeurNumero").value = userPhone;
+    } else {
+      // Si pas de numéro dans le profil, essayer de le construire avec le pays
+      const country = userCountry || "Bénin";
+      const prefix = country === "Bénin" ? "+229" : "+242";
+      document.getElementById("envoyeurNumero").value = prefix;
+    }
+    if (userCountry) {
+      document.getElementById("pays").value = userCountry;
+    }
+
+    // Ajouter un écouteur pour le champ pays pour mettre à jour l'indicatif téléphonique
+    document.getElementById("pays").addEventListener("change", function() {
+      const country = this.value;
+      const envoyeurNumero = document.getElementById("envoyeurNumero");
+      const currentNumber = envoyeurNumero.value.replace(/^\+\d+/, ""); // Enlever l'ancien préfixe
+      const newPrefix = country === "Bénin" ? "+229" : "+242";
+      envoyeurNumero.value = newPrefix + currentNumber;
+    });
+
+    const montantInput = document.getElementById("montant");
+    const totalInput = document.getElementById("total");
+
+    montantInput.addEventListener("input", () => {
+      const montant = parseFloat(montantInput.value);
+      if (!isNaN(montant) && montant > 0) {
+        const frais = Math.ceil(montant * 0.1);
+        const total = montant + frais;
+        totalInput.value = `${total} FCFA`;
+        totalInput.dataset.total = total;
+      } else {
+        totalInput.value = "0 FCFA";
+        totalInput.dataset.total = 0;
+      }
+    });
+
+    const sendForm = document.getElementById("sendForm");
+    if (sendForm) {
+      sendForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const payload = {
+          pays: document.getElementById("pays").value,
+          montant: parseInt(document.getElementById("montant").value),
+          total: parseInt(totalInput.dataset.total || 0),
+          operateur: document.getElementById("operateur").value,
+          numero: document.getElementById("numero").value,
+          nom: document.getElementById("nom").value,
+          message: document.getElementById("message").value,
+          envoyeurNom: document.getElementById("envoyeurNom").value,
+          envoyeurNumero: document.getElementById("envoyeurNumero").value
+        };
+
+        console.log("Données envoyées:", payload); // Pour déboguer
+
+        try {
+          const res = await fetch("/api/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            const toast = document.getElementById("toastSuccess");
+            const bsToast = new bootstrap.Toast(toast);
+            toast.querySelector(".toast-body").textContent = data.message || "Transfert enregistré.";
+            bsToast.show();
+            sendForm.reset();
+            totalInput.value = "0 FCFA";
+          } else {
+            alert(data.message || "Erreur lors de l'envoi.");
+          }
+        } catch (error) {
+          console.error("Erreur:", error); // Pour déboguer
+          alert("Erreur réseau.");
+        }
+      });
+    }
+
+    // 🌍 Langue
+    const langSelect = document.getElementById("languageSelect");
+    const savedLang = localStorage.getItem("lang") || "fr";
+    langSelect.value = savedLang;
+    updateLanguage(savedLang);
+
+    langSelect.addEventListener("change", () => {
+      const lang = langSelect.value;
+      localStorage.setItem("lang", lang);
+      updateLanguage(lang);
+    });
+
+    function updateLanguage(lang) {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (translations[lang] && translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (translations[lang] && translations[lang][key]) {
+          el.setAttribute("placeholder", translations[lang][key]);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1238 @@
+/* === RESET ET BASE === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f1f1f1;
+  color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ======================
+   VARIABLES CSS GLOBALES
+   ====================== */
+:root {
+  --primary-color: #4e73df;
+  --secondary-color: #6c757d;
+  --success-color: #1cc88a;
+  --warning-color: #f6c23e;
+  --danger-color: #e74a3b;
+  --dark-color: #5a5c69;
+  --light-color: #f8f9fa;
+}
+
+/* ======================
+   HEADER / NAVBAR FIXE
+   ====================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: white !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 0.5rem 0;
+}
+
+.navbar .container-fluid {
+  padding: 0 1rem;
+  max-width: 100%;
+}
+
+.navbar-brand {
+  font-size: 1.2rem;
+  padding: 0;
+}
+
+.navbar .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.navbar .dropdown-menu {
+  margin-top: 0.3rem;
+}
+
+.navbar.hide {
+  transform: translateY(-100%);
+}
+
+.navbar.show {
+  transform: translateY(0);
+}
+
+/* ======================
+   HERO SECTION (Index)
+   ====================== */
+.hero {
+  position: relative;
+  padding-top: 6rem;
+  margin-top: 0;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  overflow: hidden;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0 auto;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 5rem;
+    min-height: 50vh;
+  }
+  .hero-content h1 {
+    font-size: 1.5rem;
+    padding: 0 1rem;
+  }
+}
+
+/* Mode sombre */
+body.dark .hero::before {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+body.dark .hero-image {
+  filter: brightness(0.8) contrast(1.1);
+}
+
+/* ======================
+   BOUTONS ET EFFETS
+   ====================== */
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ======================
+   ICONES ET BOXES
+   ====================== */
+.icon-box {
+  padding: 1.5rem;
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.icon-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.icon-box i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ======================
+   SECTION FAQ
+   ====================== */
+.section-faq {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  z-index: 1;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* ======================
+   ANIMATIONS
+   ====================== */
+/* Les animations sont maintenant dans animations.css */
+
+/* ======================
+   FOOTER
+   ====================== */
+footer {
+  background: var(--dark-color);
+  color: white;
+}
+
+footer a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--primary-color);
+}
+
+/* ======================
+   BOUTONS FLOTTANTS
+   ====================== */
+.btn-floating {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  text-align: center !important;
+  font-size: 18px !important;
+  transition: all 0.3s ease !important;
+  background-color: transparent !important;
+  border: 2px solid !important;
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+}
+
+.btn-floating:hover {
+  transform: scale(1.1) !important;
+}
+
+/* Facebook */
+.btn-floating.facebook {
+  border-color: #1877f2 !important;
+}
+.btn-floating.facebook .fa-facebook-f {
+  color: #1877f2 !important;
+  transition: color 0.3s ease !important;
+}
+.btn-floating.facebook:hover {
+  background-color: #1877f2 !important;
+}
+.btn-floating.facebook:hover .fa-facebook-f {
+  color: white !important;
+}
+
+/* TikTok */
+.btn-floating.tiktok {
+  border-color: #000000 !important;
+}
+.btn-floating.tiktok .fa-tiktok {
+  color: #000000 !important;
+  transition: color 0.3s ease !important;
+}
+.btn-floating.tiktok:hover {
+  background-color: #000000 !important;
+}
+.btn-floating.tiktok:hover .fa-tiktok {
+  color: white !important;
+}
+
+/* WhatsApp */
+.btn-floating.whatsapp {
+  border-color: #25D366 !important;
+}
+.btn-floating.whatsapp .fa-whatsapp {
+  color: #25D366 !important;
+  transition: color 0.3s ease !important;
+}
+.btn-floating.whatsapp:hover {
+  background-color: #25D366 !important;
+}
+.btn-floating.whatsapp:hover .fa-whatsapp {
+  color: white !important;
+}
+
+/* ======================
+   SWITCH THEME SOMBRE
+   ====================== */
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "☀️";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+input:checked + .slider {
+  background-color: #0fbcf9;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+  content: "🌙";
+}
+
+/* ======================
+   PROFIL (DROPDOWN)
+   ====================== */
+#profileCard {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  animation: slideDown 0.3s ease;
+}
+
+/* ======================
+   SECTION ICONES
+   ====================== */
+.icon-section {
+  position: relative;
+  padding: 4rem 0;
+  background: white;
+  z-index: 1;
+}
+
+/* ======================
+   RESPONSIVE NAVBAR
+   ====================== */
+@media (max-width: 991.98px) {
+  .navbar .container-fluid {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .navbar .d-flex {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .navbar .btn {
+    width: auto;
+    margin: 0.25rem;
+  }
+  .theme-switch {
+    margin: 0.5rem auto;
+  }
+}
+
+/* === BOUTONS === */
+.btn-pill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.6rem 2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #039be5, #00c6ff);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-pill:hover {
+  background: linear-gradient(135deg, #00c6ff, #039be5);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-pill:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2) inset;
+}
+
+/* === NAVIGATION === */
+.nav-pill {
+  border-radius: 999px;
+  padding: 0.4rem 1.2rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  background-color: transparent;
+  color: #039be5;
+  border: 2px solid #00c6ff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-pill:hover {
+  background: linear-gradient(135deg, #00c6ff, #039be5);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-pill:active {
+  transform: scale(0.95);
+}
+
+/* === EFFETS === */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.bounce {
+  animation: bounceIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* === DARK MODE === */
+body.dark {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #e0e0e0;
+}
+
+body.dark .hero {
+  background: linear-gradient(to right, #222, #333);
+}
+
+body.dark .btn-pill,
+body.dark .nav-pill {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border-color: #333;
+}
+
+body.dark .btn-pill {
+  background: linear-gradient(135deg, #0077c2, #005fa3);
+}
+
+body.dark .btn-pill:hover {
+  background: linear-gradient(135deg, #00c6ff, #039be5);
+}
+
+body.dark .navbar {
+  background: rgba(26, 26, 26, 0.95);
+  border-bottom-color: #333;
+}
+
+body.dark .navbar-brand,
+body.dark .nav-link,
+body.dark .btn-outline-secondary {
+  color: #e0e0e0;
+}
+
+body.dark .btn-outline-primary {
+  color: #0fbcf9;
+  border-color: #0fbcf9;
+}
+
+body.dark .btn-outline-primary:hover {
+  background-color: #0fbcf9;
+  color: #1a1a1a;
+}
+
+body.dark .icon-box {
+  background: #2d2d2d;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+body.dark .section-faq {
+  background: #2d2d2d;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+body.dark .accordion-button {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+body.dark .accordion-button:not(.collapsed) {
+  background-color: #0fbcf9;
+  color: #1a1a1a;
+}
+
+body.dark .accordion-body {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+body.dark .dropdown-menu {
+  background-color: #2d2d2d;
+  border-color: #333;
+}
+
+body.dark .dropdown-item {
+  color: #e0e0e0;
+}
+
+body.dark .dropdown-item:hover {
+  background-color: #3d3d3d;
+  color: #0fbcf9;
+}
+
+body.dark .form-control,
+body.dark .form-select {
+  background-color: #2d2d2d;
+  border-color: #333;
+  color: #e0e0e0;
+}
+
+body.dark .form-control:focus,
+body.dark .form-select:focus {
+  background-color: #2d2d2d;
+  border-color: #0fbcf9;
+  color: #e0e0e0;
+}
+
+body.dark .login-card,
+body.dark .card {
+  background-color: #2d2d2d;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+body.dark .toast {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+body.dark .modal-content {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+body.dark .modal-header,
+body.dark .modal-footer {
+  border-color: #333;
+}
+
+body.dark .table {
+  color: #e0e0e0;
+}
+
+body.dark .table td,
+body.dark .table th {
+  border-color: #333;
+}
+
+/* === SPECIFIQUES A D'AUTRES PAGES (login, envoie, contact...) === */
+body.login-page {
+  background: linear-gradient(to right, #e0f7fa, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.login-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Message & Contact (spécifique) */
+.contact-card {
+  background: #fff;
+  width: 90%;
+  max-width: 500px;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+#messages::-webkit-scrollbar {
+  width: 6px;
+}
+#messages::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+/* Boutons réseaux sociaux */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-floating {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  text-align: center !important;
+  font-size: 18px !important;
+  transition: all 0.3s ease !important;
+  background-color: transparent !important;
+  border: 2px solid !important;
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+}
+
+.btn-floating:hover {
+  transform: scale(1.1) !important;
+}
+
+/* Facebook */
+.btn-floating.facebook {
+  border-color: #1877f2 !important;
+}
+.btn-floating.facebook .fa-facebook-f {
+  color: #1877f2 !important;
+  transition: color 0.3s ease !important;
+}
+.btn-floating.facebook:hover {
+  background-color: #1877f2 !important;
+}
+.btn-floating.facebook:hover .fa-facebook-f {
+  color: white !important;
+}
+
+/* TikTok */
+.btn-floating.tiktok {
+  border-color: #000000 !important;
+}
+.btn-floating.tiktok .fa-tiktok {
+  color: #000000 !important;
+  transition: color 0.3s ease !important;
+}
+.btn-floating.tiktok:hover {
+  background-color: #000000 !important;
+}
+.btn-floating.tiktok:hover .fa-tiktok {
+  color: white !important;
+}
+
+/* WhatsApp */
+.btn-floating.whatsapp {
+  border-color: #25D366 !important;
+}
+.btn-floating.whatsapp .fa-whatsapp {
+  color: #25D366 !important;
+  transition: color 0.3s ease !important;
+}
+.btn-floating.whatsapp:hover {
+  background-color: #25D366 !important;
+}
+.btn-floating.whatsapp:hover .fa-whatsapp {
+  color: white !important;
+}
+
+@media (max-width: 576px) {
+  #profileCard {
+    right: 1rem !important; /* espace depuis le bord */
+    left: auto !important;
+    width: calc(100vw - 2rem); /* prendre presque toute la largeur de l'écran */
+    min-width: unset !important; /* supprimer le min-width fixe */
+  }
+}
+.section-faq {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+[data-theme="light"] .section-faq {
+  background-color: #f8f9fa; /* clair */
+  color: #212529;
+}
+
+[data-theme="dark"] .section-faq {
+  background-color: #121212; /* sombre */
+  color: #f0f0f0;
+}
+
+/* Section FAQ adaptative au thème */
+.section-faq {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+[data-theme="light"] .section-faq {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+[data-theme="dark"] .section-faq {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+/* Accordéon en mode sombre */
+[data-theme="dark"] .accordion-button {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  border-color: #444;
+}
+
+[data-theme="dark"] .accordion-body {
+  background-color: #2a2a2a;
+  color: #ddd;
+}
+
+[data-theme="dark"] .accordion-button:not(.collapsed) {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+/* Animation de transition pour le mode sombre */
+body.dark * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Styles de la page des transactions */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Nunito', sans-serif;
+}
+
+.page-title {
+  color: var(--dark-color);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Cartes de statistiques */
+.stats-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  transition: transform 0.2s;
+}
+
+.stats-card:hover {
+  transform: translateY(-3px);
+}
+
+.stats-card .icon {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.stats-card.completed .icon {
+  color: var(--success-color);
+}
+
+.stats-card.pending .icon {
+  color: var(--warning-color);
+}
+
+.stats-card .number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+/* Filtres */
+.filter-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-control, .form-select {
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d3e2;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Carte des transactions */
+.transaction-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  overflow: hidden;
+}
+
+/* Tableau */
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background-color: #f8f9fc;
+  border-bottom: 2px solid #e3e6f0;
+  color: var(--dark-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.table td {
+  vertical-align: middle;
+  border-color: #e3e6f0;
+}
+
+/* Badges */
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 50rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.badge.bg-success {
+  background-color: var(--success-color) !important;
+}
+
+.badge.bg-warning {
+  background-color: var(--warning-color) !important;
+}
+
+.badge.bg-danger {
+  background-color: var(--danger-color) !important;
+}
+
+/* Boutons */
+.btn-view {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  border-radius: 50rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.btn-view:hover {
+  background-color: #2e59d9;
+  border-color: #2e59d9;
+}
+
+/* Icônes de transaction */
+.transaction-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.transaction-icon.sent {
+  background-color: rgba(78, 115, 223, 0.1);
+  color: var(--primary-color);
+}
+
+.transaction-icon.received {
+  background-color: rgba(28, 200, 138, 0.1);
+  color: var(--success-color);
+}
+
+/* Avatar utilisateur */
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* Menu déroulant */
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  border-radius: 0.35rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fc;
+}
+
+.dropdown-divider {
+  border-color: #e3e6f0;
+}
+
+/* Styles pour les liens du footer */
+footer .list-unstyled li a {
+    color: white !important;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+}
+
+footer .list-unstyled li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transition: width 0.3s ease;
+}
+
+footer .list-unstyled li a:hover {
+    color: #0d6efd !important;
+}
+
+footer .list-unstyled li a:hover::after {
+    width: 100%;
+    background-color: #0d6efd;
+}
+
+/* Espacement entre les liens */
+footer .list-unstyled li {
+    margin-bottom: 0.5rem;
+}
+
+/* Styles pour les liens de la section "Comment ça marche ?" */
+.section-faq a {
+    color: #0d6efd;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+}
+
+.section-faq a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+}
+
+.section-faq a:hover {
+    color: #0a58ca;
+}
+
+.section-faq a:hover::after {
+    width: 100%;
+}
+
+/* Ajustement pour le mode sombre */
+body.dark .section-faq a {
+    color: #0fbcf9;
+}
+
+body.dark .section-faq a:hover {
+    color: #0d8ec7;
+}
+
+body.dark .section-faq a::after {
+    background-color: #0fbcf9;
+}
+
+/* Styles pour les liens de la page de connexion */
+.login-links a {
+    color: #0d6efd;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+}
+
+.login-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+}
+
+.login-links a:hover {
+    color: #0a58ca;
+}
+
+.login-links a:hover::after {
+    width: 100%;
+}
+
+/* Ajustement pour le mode sombre */
+body.dark .login-links a {
+    color: #0fbcf9;
+}
+
+body.dark .login-links a:hover {
+    color: #0d8ec7;
+}
+
+body.dark .login-links a::after {
+    background-color: #0fbcf9;
+}
+
+/* Styles pour les liens de la page d'inscription */
+.register-links a {
+    color: #0d6efd;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: all 0.3s ease;
+}
+
+.register-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+}
+
+.register-links a:hover {
+    color: #0a58ca;
+}
+
+.register-links a:hover::after {
+    width: 100%;
+}
+
+/* Ajustement pour le mode sombre */
+body.dark .register-links a {
+    color: #0fbcf9;
+}
+
+body.dark .register-links a:hover {
+    color: #0d8ec7;
+}
+
+body.dark .register-links a::after {
+    background-color: #0fbcf9;
+}
+
+/* Animation du bouton "Envoyer de l'argent" */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(78, 115, 223, 0.4);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(78, 115, 223, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(78, 115, 223, 0);
+  }
+}
+
+#sendMoneyBtn {
+  animation: pulse 1.5s infinite;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#sendMoneyBtn:hover {
+  animation: none;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(78, 115, 223, 0.4);
+}
+
+/* Animation des statistiques */
+.stats-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stats-number.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Dégradés pour les cartes "Comment ça marche" */
+.step-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.step-card:hover::before {
+  opacity: 1;
+}
+
+/* Icônes animées */
+.step-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-card:hover .step-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* FAQ améliorée */
+.accordion-button {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.accordion-button::before {
+  display: none;
+}
+
+.accordion-button:not(.collapsed)::before {
+  display: none;
+}
+
+.accordion-body {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.accordion-body::before {
+  display: none;
+}
+
+/* Mode sombre adapté */
+body.dark .step-card {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+}
+
+body.dark .step-card:hover {
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+

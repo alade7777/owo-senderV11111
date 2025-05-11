@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="profileTitle">Profil - OWO-SENDER</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    /* Styles pour le mode sombre */
+    body.dark {
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+
+    body.dark .card {
+      background-color: #2d2d2d;
+      border-color: #404040;
+    }
+
+    body.dark .navbar {
+      background-color: #2d2d2d !important;
+      border-color: #404040;
+    }
+
+    body.dark .navbar-light .navbar-brand,
+    body.dark .navbar-light .btn-outline-secondary {
+      color: #ffffff;
+    }
+
+    body.dark .text-muted {
+      color: #a0a0a0 !important;
+    }
+
+    body.dark .bg-light {
+      background-color: #404040 !important;
+      color: #ffffff;
+    }
+
+    body.dark .form-control-plaintext {
+      color: #ffffff;
+    }
+
+    body.dark .table {
+      color: #ffffff;
+    }
+
+    body.dark .table thead th {
+      border-bottom-color: #404040;
+    }
+
+    body.dark .table td {
+      border-top-color: #404040;
+    }
+
+    body.dark .form-label {
+      color: #ffffff;
+    }
+
+    body.dark .form-select,
+    body.dark .form-control {
+      background-color: #404040;
+      border-color: #505050;
+      color: #ffffff;
+    }
+
+    body.dark .input-group-text {
+      background-color: #404040;
+      border-color: #505050;
+      color: #ffffff;
+    }
+
+    body.dark .btn-outline-secondary {
+      color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    body.dark .btn-outline-secondary:hover {
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    /* Styles pour les titres et en-têtes en mode sombre */
+    body.dark h4,
+    body.dark h5,
+    body.dark h6,
+    body.dark .card-header h5,
+    body.dark .card-header .mb-0 {
+      color: #ffffff !important;
+    }
+
+    body.dark .card-header {
+      background-color: #2d2d2d;
+    }
+
+    body.dark .text-primary {
+      color: #4dabf7 !important;
+    }
+
+    body.dark .bg-primary {
+      background-color: #1971c2 !important;
+    }
+
+    body.dark .btn-primary {
+      background-color: #1971c2;
+      border-color: #1971c2;
+    }
+
+    body.dark .btn-primary:hover {
+      background-color: #1864ab;
+      border-color: #1864ab;
+    }
+
+    body.dark .btn-outline-primary {
+      color: #4dabf7;
+      border-color: #4dabf7;
+    }
+
+    body.dark .btn-outline-primary:hover {
+      background-color: #4dabf7;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 border-bottom">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand fw-bold me-4" href="index.html">
+        <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40">
+      </a>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <a href="index.html" class="btn btn-outline-secondary rounded-pill">
+        <i class="fas fa-arrow-left me-2"></i><span data-i18n="back">Retour</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="container py-5">
+  <div class="row">
+    <!-- Colonne de gauche - Informations principales -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body text-center p-4">
+          <div id="profileAvatar" class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4 shadow" 
+               style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold; border: 4px solid #fff;">
+          </div>
+          <h4 id="profileName" class="mb-2">-</h4>
+          <p id="profileEmail" class="text-muted mb-4">-</p>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary rounded-pill" onclick="editProfile()">
+              <i class="fas fa-edit me-2"></i><span data-i18n="editProfile">Modifier le profil</span>
+            </button>
+            <button class="btn btn-outline-danger rounded-pill" onclick="logout()">
+              <i class="fas fa-sign-out-alt me-2"></i><span data-i18n="logout">Déconnexion</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne de droite - Détails et statistiques -->
+    <div class="col-md-8">
+      <!-- Informations personnelles -->
+      <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-header bg-transparent border-0 pt-4 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="fas fa-user me-2 text-primary"></i><span data-i18n="personalInfo">Informations personnelles</span></h5>
+          <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="toggleEditMode()" id="editToggleBtn">
+            <i class="fas fa-edit me-2"></i><span data-i18n="edit">Modifier</span>
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- Mode affichage -->
+          <div id="viewMode">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted" data-i18n="phone">Téléphone</label>
+                <p id="profilePhone" class="form-control-plaintext bg-light rounded p-2">-</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted" data-i18n="country">Pays</label>
+                <p id="profileCountry" class="form-control-plaintext bg-light rounded p-2">-</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted" data-i18n="city">Ville</label>
+                <p id="profileCity" class="form-control-plaintext bg-light rounded p-2">-</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted" data-i18n="joinDate">Date d'inscription</label>
+                <p id="profileJoinDate" class="form-control-plaintext bg-light rounded p-2">-</p>
+              </div>
+            </div>
+          </div>
+          <!-- Mode édition -->
+          <div id="editMode" class="d-none">
+            <form id="editProfileForm" onsubmit="saveProfile(event)">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" data-i18n="country">Pays</label>
+                  <select class="form-select" id="editCountry" onchange="updatePhonePrefix()">
+                    <option value="Bénin" data-i18n="benin">Bénin</option>
+                    <option value="Congo" data-i18n="congo">Congo</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" data-i18n="phone">Téléphone</label>
+                  <div class="input-group">
+                    <span class="input-group-text" id="phonePrefix">+229</span>
+                    <input type="tel" class="form-control" id="editPhone" placeholder="XX XX XX XX" aria-describedby="phonePrefix">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" data-i18n="city">Ville</label>
+                  <input type="text" class="form-control" id="editCity" placeholder="Votre ville">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" data-i18n="fullName">Nom complet</label>
+                  <input type="text" class="form-control" id="editName" placeholder="Votre nom">
+                </div>
+              </div>
+              <div class="mt-4 d-flex gap-2 justify-content-end">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" onclick="cancelEdit()">
+                  <i class="fas fa-times me-2"></i><span data-i18n="cancel">Annuler</span>
+                </button>
+                <button type="submit" class="btn btn-primary rounded-pill">
+                  <i class="fas fa-save me-2"></i><span data-i18n="save">Enregistrer</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-header bg-transparent border-0 pt-4">
+          <h5 class="mb-0"><i class="fas fa-chart-bar me-2 text-primary"></i><span data-i18n="statistics">Statistiques</span></h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="text-center p-3 bg-light rounded-4">
+                <h3 id="totalTransfers" class="mb-1">0</h3>
+                <p class="text-muted mb-0" data-i18n="totalTransfers">Transferts totaux</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-center p-3 bg-light rounded-4">
+                <h3 id="totalAmount" class="mb-1">0 €</h3>
+                <p class="text-muted mb-0" data-i18n="totalAmount">Montant total</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-center p-3 bg-light rounded-4">
+                <h3 id="successRate" class="mb-1">0%</h3>
+                <p class="text-muted mb-0" data-i18n="successRate">Taux de réussite</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historique récent -->
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-transparent border-0 pt-4">
+          <h5 class="mb-0"><i class="fas fa-history me-2 text-primary"></i><span data-i18n="recentHistory">Historique récent</span></h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th data-i18n="date">Date</th>
+                  <th data-i18n="recipient">Destinataire</th>
+                  <th data-i18n="amount">Montant</th>
+                  <th data-i18n="status">Statut</th>
+                </tr>
+              </thead>
+              <tbody id="recentTransfers">
+                <tr>
+                  <td colspan="4" class="text-center" data-i18n="noRecentTransfers">Aucun transfert récent</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bouton Voir vos transactions -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="transactions.html" class="btn btn-primary btn-lg rounded-pill px-5">
+                <i class="fas fa-history me-2"></i><span data-i18n="viewTransactions">Voir vos transactions</span>
+            </a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="dark-mode.js"></script>
+<script src="lang.js"></script>
+<script>
+  // Vérification du mode sombre
+  const isDark = localStorage.getItem("theme") === "dark";
+  if (isDark) {
+    document.body.classList.add("dark");
+  }
+
+  // Initialiser la langue au chargement
+  document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("lang") || "fr";
+    updateLanguage(savedLang);
+  });
+
+  // Récupération des informations utilisateur
+  const name = localStorage.getItem("userName");
+  const email = localStorage.getItem("userEmail");
+  const avatar = document.getElementById("profileAvatar");
+  const profileName = document.getElementById("profileName");
+  const profileEmail = document.getElementById("profileEmail");
+
+  // Vérification de la connexion
+  if (!email) {
+    window.location.href = "connexion.html";
+  }
+
+  // Initialisation des informations de base
+  avatar.textContent = name?.trim().charAt(0).toUpperCase() || "?";
+  profileName.textContent = name || "-";
+  profileEmail.textContent = email || "-";
+
+  // Fonction de déconnexion
+  function logout() {
+    // Sauvegarder toutes les informations du profil avant la déconnexion
+    const profileData = {
+      name: localStorage.getItem("userName"),
+      email: localStorage.getItem("userEmail"),
+      phone: localStorage.getItem("userPhone"),
+      country: localStorage.getItem("userCountry"),
+      city: localStorage.getItem("userCity"),
+      joinDate: localStorage.getItem("userJoinDate")
+    };
+
+    // Stocker les données dans un objet séparé
+    localStorage.setItem("userProfileData", JSON.stringify(profileData));
+
+    // Nettoyer les données de session
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userPhone");
+    localStorage.removeItem("userCountry");
+    localStorage.removeItem("userCity");
+    localStorage.removeItem("userJoinDate");
+
+    window.location.href = "index.html";
+  }
+
+  // Fonction pour mettre à jour l'indicatif téléphonique
+  function updatePhonePrefix() {
+    const country = document.getElementById("editCountry").value;
+    const phonePrefix = document.getElementById("phonePrefix");
+    
+    switch(country) {
+      case "Bénin":
+        phonePrefix.textContent = "+229";
+        break;
+      case "Congo":
+        phonePrefix.textContent = "+242";
+        break;
+      default:
+        phonePrefix.textContent = "+229";
+    }
+  }
+
+  // Fonction pour basculer entre le mode affichage et édition
+  function toggleEditMode() {
+    const viewMode = document.getElementById("viewMode");
+    const editMode = document.getElementById("editMode");
+    const editToggleBtn = document.getElementById("editToggleBtn");
+
+    if (viewMode.classList.contains("d-none")) {
+      // Passer en mode affichage
+      viewMode.classList.remove("d-none");
+      editMode.classList.add("d-none");
+      editToggleBtn.innerHTML = '<i class="fas fa-edit me-2"></i><span data-i18n="edit">Modifier</span>';
+    } else {
+      // Passer en mode édition
+      viewMode.classList.add("d-none");
+      editMode.classList.remove("d-none");
+      editToggleBtn.innerHTML = '<i class="fas fa-eye me-2"></i><span data-i18n="view">Afficher</span>';
+      
+      // Remplir le formulaire avec les données actuelles
+      const country = localStorage.getItem("userCountry") || "Bénin";
+      document.getElementById("editCountry").value = country;
+      updatePhonePrefix(); // Mettre à jour l'indicatif en fonction du pays
+      
+      // Extraire le numéro sans l'indicatif
+      const fullPhone = localStorage.getItem("userPhone") || "";
+      const phoneWithoutPrefix = fullPhone.replace(/^\+\d+/, "");
+      document.getElementById("editPhone").value = phoneWithoutPrefix;
+      
+      document.getElementById("editCity").value = localStorage.getItem("userCity") || "";
+      document.getElementById("editName").value = name || "";
+    }
+  }
+
+  // Fonction pour annuler l'édition
+  function cancelEdit() {
+    toggleEditMode();
+  }
+
+  // Fonction pour sauvegarder le profil
+  function saveProfile(event) {
+    event.preventDefault();
+    
+    // Récupérer les valeurs du formulaire
+    const newName = document.getElementById("editName").value;
+    const phonePrefix = document.getElementById("phonePrefix").textContent;
+    const phoneNumber = document.getElementById("editPhone").value;
+    const newPhone = phonePrefix + phoneNumber;
+    const newCountry = document.getElementById("editCountry").value;
+    const newCity = document.getElementById("editCity").value;
+
+    // Sauvegarder dans le localStorage
+    localStorage.setItem("userName", newName);
+    localStorage.setItem("userPhone", newPhone);
+    localStorage.setItem("userCountry", newCountry);
+    localStorage.setItem("userCity", newCity);
+
+    // Sauvegarder aussi dans l'objet de profil
+    const profileData = {
+      name: newName,
+      email: localStorage.getItem("userEmail"),
+      phone: newPhone,
+      country: newCountry,
+      city: newCity,
+      joinDate: localStorage.getItem("userJoinDate") || new Date().toLocaleDateString()
+    };
+    localStorage.setItem("userProfileData", JSON.stringify(profileData));
+
+    // Mettre à jour l'affichage
+    avatar.textContent = newName.trim().charAt(0).toUpperCase() || "?";
+    profileName.textContent = newName;
+    loadAdditionalData();
+
+    // Retourner en mode affichage
+    toggleEditMode();
+
+    // Afficher un message de succès
+    alert("Profil mis à jour avec succès !");
+  }
+
+  // Chargement des données supplémentaires
+  function loadAdditionalData() {
+    // Essayer d'abord de charger depuis l'objet de profil
+    const profileData = JSON.parse(localStorage.getItem("userProfileData") || "{}");
+    
+    // Récupérer les données du localStorage ou de l'objet de profil
+    const phone = profileData.phone || localStorage.getItem("userPhone");
+    const country = profileData.country || localStorage.getItem("userCountry") || "Bénin";
+    const city = profileData.city || localStorage.getItem("userCity");
+    const joinDate = profileData.joinDate || localStorage.getItem("userJoinDate") || new Date().toLocaleDateString();
+
+    // Sauvegarder les données dans le localStorage si elles viennent de l'objet de profil
+    if (profileData.phone) localStorage.setItem("userPhone", profileData.phone);
+    if (profileData.country) localStorage.setItem("userCountry", profileData.country);
+    if (profileData.city) localStorage.setItem("userCity", profileData.city);
+    if (profileData.joinDate) localStorage.setItem("userJoinDate", profileData.joinDate);
+
+    // Mettre à jour l'affichage des informations personnelles
+    document.getElementById("profilePhone").textContent = phone || "-";
+    document.getElementById("profileCountry").textContent = country;
+    document.getElementById("profileCity").textContent = city || "-";
+    document.getElementById("profileJoinDate").textContent = joinDate;
+    
+    // Récupérer les transactions de l'utilisateur
+    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    const userEmail = localStorage.getItem("userEmail");
+    
+    // Filtrer les transactions de l'utilisateur
+    const userTransactions = transactions.filter(transaction => 
+      transaction.senderEmail === userEmail || transaction.recipientEmail === userEmail
+    );
+
+    // Calculer les statistiques
+    const totalTransfers = userTransactions.length;
+    const completedTransfers = userTransactions.filter(t => t.status === 'completed').length;
+    const totalAmount = userTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+    const successRate = totalTransfers > 0 ? Math.round((completedTransfers / totalTransfers) * 100) : 0;
+
+    // Mettre à jour les statistiques
+    document.getElementById("totalTransfers").textContent = totalTransfers;
+    document.getElementById("totalAmount").textContent = totalAmount.toLocaleString() + " FCFA";
+    document.getElementById("successRate").textContent = successRate + "%";
+
+    // Mettre à jour l'historique récent (5 dernières transactions)
+    const recentTransfersList = document.getElementById("recentTransfers");
+    recentTransfersList.innerHTML = '';
+
+    if (userTransactions.length === 0) {
+      recentTransfersList.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center" data-i18n="noRecentTransfers">Aucun transfert récent</td>
+        </tr>
+      `;
+    } else {
+      // Trier les transactions par date (les plus récentes d'abord)
+      const sortedTransactions = userTransactions.sort((a, b) => 
+        new Date(b.date) - new Date(a.date)
+      ).slice(0, 5); // Prendre les 5 plus récentes
+
+      sortedTransactions.forEach(transaction => {
+        const isSender = transaction.senderEmail === userEmail;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${new Date(transaction.date).toLocaleDateString()}</td>
+          <td>${isSender ? transaction.recipient : transaction.sender}</td>
+          <td>${transaction.amount.toLocaleString()} FCFA</td>
+          <td>
+            <span class="badge ${getStatusBadgeClass(transaction.status)}">
+              ${getStatusText(transaction.status)}
+            </span>
+          </td>
+        `;
+        recentTransfersList.appendChild(row);
+      });
+    }
+  }
+
+  // Fonction pour obtenir la classe CSS du badge selon le statut
+  function getStatusBadgeClass(status) {
+    switch(status.toLowerCase()) {
+      case 'completed':
+        return 'bg-success';
+      case 'pending':
+        return 'bg-warning';
+      case 'failed':
+        return 'bg-danger';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
+  // Fonction pour obtenir le texte du statut
+  function getStatusText(status) {
+    switch(status.toLowerCase()) {
+      case 'completed':
+        return document.querySelector('[data-i18n="completed"]').textContent;
+      case 'pending':
+        return document.querySelector('[data-i18n="pending"]').textContent;
+      case 'failed':
+        return document.querySelector('[data-i18n="failed"]').textContent;
+      default:
+        return status;
+    }
+  }
+
+  // Initialiser l'indicatif téléphonique au chargement
+  document.addEventListener('DOMContentLoaded', function() {
+    updatePhonePrefix();
+    loadAdditionalData();
+  });
+</script>
+
+</body>
+</html> 

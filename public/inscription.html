@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="registerTitle">Inscription - OWO-SENDER</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 400px;
+      padding: 2rem;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      animation: fadeIn 0.5s ease;
+      position: relative;
+    }
+
+    .back-button-container {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+    }
+
+    .register-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      margin-top: 1rem;
+    }
+
+    .register-header h2 {
+      color: #007bff;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .register-header p {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+
+    .btn-pill {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 2rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-pill:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    .register-links {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .register-links a {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .register-links a:hover {
+      color: #0056b3;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @media (max-width: 768px) {
+      .register-container {
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+    }
+
+    /* Styles pour le mode sombre */
+    body.dark {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #ffffff;
+    }
+
+    body.dark .register-container {
+      background: #2d2d2d;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    body.dark .register-header h2 {
+      color: #4dabf7;
+    }
+
+    body.dark .register-header p {
+      color: #a0a0a0;
+    }
+
+    body.dark .form-control {
+      background-color: #404040;
+      border-color: #505050;
+      color: #ffffff;
+    }
+
+    body.dark .form-control:focus {
+      border-color: #4dabf7;
+      box-shadow: 0 0 0 0.2rem rgba(77,171,247,0.25);
+    }
+
+    body.dark .form-control::placeholder {
+      color: #a0a0a0;
+    }
+
+    body.dark .btn-outline-primary {
+      color: #4dabf7;
+      border-color: #4dabf7;
+    }
+
+    body.dark .btn-outline-primary:hover {
+      background-color: #4dabf7;
+      color: #ffffff;
+    }
+
+    body.dark .btn-outline-secondary {
+      background-color: #404040;
+      border-color: #505050;
+      color: #ffffff;
+    }
+
+    body.dark .btn-outline-secondary:hover {
+      background-color: #505050;
+      border-color: #606060;
+    }
+
+    body.dark .btn-pill {
+      background: #4dabf7;
+    }
+
+    body.dark .btn-pill:hover {
+      background: #1971c2;
+    }
+
+    body.dark .register-links a {
+      color: #4dabf7;
+    }
+
+    body.dark .register-links a:hover {
+      color: #1971c2;
+    }
+
+    body.dark .error-message {
+      color: #ff6b6b;
+    }
+
+    /* Ajout des styles pour la connexion sociale */
+    .social-login {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .social-login p {
+      color: #6c757d;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .social-login p::before,
+    .social-login p::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 30%;
+      height: 1px;
+      background: #dee2e6;
+    }
+
+    .social-login p::before {
+      left: 0;
+    }
+
+    .social-login p::after {
+      right: 0;
+    }
+
+    .btn-google {
+      background: white;
+      border: 2px solid #dee2e6;
+      border-radius: 50px;
+      padding: 0.8rem;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-google:hover {
+      background: #f8f9fa;
+      border-color: #adb5bd;
+    }
+
+    body.dark .social-login p {
+      color: #a0a0a0;
+    }
+
+    body.dark .social-login p::before,
+    body.dark .social-login p::after {
+      background: #404040;
+    }
+
+    body.dark .btn-google {
+      background: #404040;
+      border-color: #505050;
+      color: #ffffff;
+    }
+
+    body.dark .btn-google:hover {
+      background: #505050;
+      border-color: #606060;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="back-button-container">
+      <a href="index.html" class="btn btn-outline-primary rounded-pill">
+        <i class="fas fa-arrow-left me-2"></i>Retour
+      </a>
+    </div>
+
+    <div class="register-header">
+      <h2 data-i18n="register">Inscription</h2>
+      <p data-i18n="registerSubtitle">Créez votre compte pour commencer</p>
+    </div>
+
+    <form id="registerForm">
+      <div class="mb-3">
+        <input type="text" id="name" class="form-control" placeholder="Nom complet" required data-i18n-placeholder="namePlaceholder" />
+        <div id="nameError" class="error-message"></div>
+      </div>
+      <div class="mb-3">
+        <input type="email" id="email" class="form-control" placeholder="Adresse email" required data-i18n-placeholder="emailPlaceholder" />
+        <div id="emailError" class="error-message"></div>
+      </div>
+        <div class="mb-3">
+        <input type="tel" id="phone" class="form-control" placeholder="Numéro de téléphone" required data-i18n-placeholder="phonePlaceholder" />
+        <div id="phoneError" class="error-message"></div>
+        </div>
+        <div class="mb-3">
+        <select id="country" class="form-control" required>
+          <option value="" data-i18n="selectCountry">Sélectionner un pays</option>
+          <option value="Bénin" data-i18n="benin">🇧🇯 Bénin</option>
+          <option value="Congo" data-i18n="congo">🇨🇬 Congo</option>
+        </select>
+        <div id="countryError" class="error-message"></div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <input type="password" id="password" class="form-control" placeholder="Mot de passe" required data-i18n-placeholder="passwordPlaceholder" />
+            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div id="passwordError" class="error-message"></div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <input type="password" id="confirmPassword" class="form-control" placeholder="Confirmer le mot de passe" required data-i18n-placeholder="confirmPasswordPlaceholder" />
+            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div id="confirmPasswordError" class="error-message"></div>
+        </div>
+        <div class="d-grid">
+        <button type="submit" class="btn-pill" data-i18n="registerBtn">S'inscrire</button>
+        </div>
+      <div class="register-links">
+          <a href="connexion.html" data-i18n="alreadyHaveAccount">Déjà un compte ? Se connecter</a>
+        </div>
+      </form>
+
+      <div class="social-login">
+        <p data-i18n="orRegisterWith">Ou s'inscrire avec</p>
+        <button type="button" class="btn-google">
+          <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" />
+          <span data-i18n="continueGoogle">Continuer avec Google</span>
+        </button>
+      </div>
+  </div>
+
+  <!-- Toast de succès -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" data-i18n="registerSuccess">Inscription réussie ! Vérifiez votre email pour activer votre compte.</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="lang.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="dark-mode.js"></script>
+  <script>
+    // Vérification du mode sombre
+    const isDark = localStorage.getItem("theme") === "dark";
+    if (isDark) {
+      document.body.classList.add("dark");
+    }
+
+    // 🌍 Langue
+    const savedLang = localStorage.getItem("lang") || "fr";
+    updateLanguage(savedLang);
+
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+
+    togglePassword.addEventListener('click', function() {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+
+    toggleConfirmPassword.addEventListener('click', function() {
+      const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmPassword.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+
+    // 📝 Inscription
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const country = document.getElementById("country").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      // Réinitialiser les erreurs
+      const errorElements = document.querySelectorAll(".error-message");
+      errorElements.forEach(el => {
+        el.textContent = "";
+        el.classList.remove("show");
+      });
+
+      // Validation
+      let hasError = false;
+
+      if (!name) {
+        document.getElementById("nameError").textContent = "Le nom est requis";
+        document.getElementById("nameError").classList.add("show");
+        hasError = true;
+      }
+
+      if (!email) {
+        document.getElementById("emailError").textContent = "L'email est requis";
+        document.getElementById("emailError").classList.add("show");
+        hasError = true;
+      }
+
+      if (!phone) {
+        document.getElementById("phoneError").textContent = "Le numéro de téléphone est requis";
+        document.getElementById("phoneError").classList.add("show");
+        hasError = true;
+      }
+
+      if (!country) {
+        document.getElementById("countryError").textContent = "Le pays est requis";
+        document.getElementById("countryError").classList.add("show");
+        hasError = true;
+      }
+
+      if (!password) {
+        document.getElementById("passwordError").textContent = "Le mot de passe est requis";
+        document.getElementById("passwordError").classList.add("show");
+        hasError = true;
+      }
+
+      if (password !== confirmPassword) {
+        document.getElementById("confirmPasswordError").textContent = "Les mots de passe ne correspondent pas";
+        document.getElementById("confirmPasswordError").classList.add("show");
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      try {
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            name, 
+            email, 
+            phone, 
+            country, 
+            password,
+            verificationType: "email" // Indique que nous voulons une vérification par email
+          }),
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || "Erreur lors de l'inscription");
+        }
+
+        const data = await response.json();
+
+        // Sauvegarder les informations utilisateur temporairement
+        localStorage.setItem("pendingVerification", "true");
+        localStorage.setItem("pendingEmail", email);
+        localStorage.setItem("pendingName", name);
+        localStorage.setItem("pendingPhone", phone);
+        localStorage.setItem("pendingCountry", country);
+
+        // Afficher le toast de succès
+        const toast = new bootstrap.Toast(document.getElementById("toastSuccess"));
+        toast.show();
+
+        // Rediriger vers la page de vérification
+        setTimeout(() => {
+          window.location.href = "verification.html";
+        }, 2000);
+
+      } catch (error) {
+        document.getElementById("emailError").textContent = error.message || "Une erreur est survenue lors de l'inscription";
+        document.getElementById("emailError").classList.add("show");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title id="pageTitle">Accueil - OWO-SENDER</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="animations.css">
+</head>
+<body>
+
+<header class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 border-bottom">
+  <div class="container-fluid">
+    <!-- Groupe principal (gauche) -->
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand fw-bold me-4" href="index.html">
+        <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40">
+      </a>
+      <button id="sendMoneyBtn" class="btn btn-outline-primary rounded-pill" data-i18n="sendMoneyBtn">
+        <i class="fas fa-paper-plane me-2"></i>Envoyer de l'argent
+      </button>
+    </div>
+
+    <!-- Groupe secondaire (droite) -->
+    <div class="d-flex align-items-center gap-3">
+      <!-- Bouton Pays -->
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" id="dropdownPays" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-globe me-2"></i><span data-i18n="country">Pays</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownPays">
+          <li><a class="dropdown-item d-flex align-items-center" href="#"><img src="https://flagcdn.com/w40/bj.png" alt="Bénin" width="20" class="me-2"> Bénin</a></li>
+          <li><a class="dropdown-item d-flex align-items-center" href="#"><img src="https://flagcdn.com/w40/cg.png" alt="Congo" width="20" class="me-2"> Congo</a></li>
+        </ul>
+      </div>
+
+      <!-- Bouton Contact -->
+      <a href="contact.html" class="btn btn-outline-primary rounded-pill">
+        <i class="fas fa-headset me-2"></i><span data-i18n="supportContact">Support / Contact</span>
+      </a>
+
+      <!-- Bouton Admin (caché par défaut) -->
+      <a href="admin.html" id="adminBtn" class="btn btn-danger rounded-pill d-none" data-i18n="admin">
+        <i class="fas fa-user-shield me-2"></i>Admin
+      </a>
+
+      <!-- Widget Utilisateur -->
+      <div id="userWidget" class="d-none">
+        <div class="dropdown">
+        <button class="btn p-0 border-0 bg-transparent" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <div id="userAvatar" class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;"></div>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="profil.html" id="openProfile"><i class="fas fa-user me-2"></i><span data-i18n="profile">Profil</span></a></li>
+            <li><a class="dropdown-item" href="transactions.html"><i class="fas fa-history me-2"></i><span data-i18n="transactions">Transactions</span></a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i><span data-i18n="logout">Déconnexion</span></a></li>
+        </ul>
+        </div>
+      </div>
+
+      <!-- Bouton Connexion (visible quand non connecté) -->
+      <a href="connexion.html" id="connexionBtn" class="btn btn-outline-secondary rounded-pill" data-i18n="login">
+        <i class="fas fa-sign-in-alt me-2"></i>Connexion
+      </a>
+
+      <!-- Sélecteur de langue -->
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" id="languageSelect" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-globe"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageSelect">
+          <li><a class="dropdown-item" href="#" onclick="changeLanguage('fr')">
+            <img src="https://flagcdn.com/w20/fr.png" alt="Français" class="me-2"> Français
+          </a></li>
+          <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">
+            <img src="https://flagcdn.com/w20/gb.png" alt="English" class="me-2"> English
+          </a></li>
+        </ul>
+      </div>
+
+      <!-- Switch thème sombre -->
+      <div class="ms-2">
+        <label class="theme-switch">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <img src="images/fond-argent.jpg" alt="Fond argent" class="hero-image">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="fade-in" data-i18n="mainTitle">Envoyer de l'argent vers le Bénin en toute sécurité</h1>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container text-center">
+    <div class="row g-4">
+      <div class="col-md-3 icon-box fade-in">
+        <i class="bi bi-shield-lock text-primary"></i>
+        <h5 data-i18n="securityGuaranteed">🔐 Sécurité garantie</h5>
+      </div>
+      <div class="col-md-3 icon-box fade-in">
+        <i class="bi bi-lightning-charge text-warning"></i>
+        <h5 data-i18n="fastTransfer">⚡ Envoi rapide</h5>
+      </div>
+      <div class="col-md-3 icon-box fade-in">
+        <i class="bi bi-cash-coin text-success"></i>
+        <h5 data-i18n="transparentFees">💰 Tarifs transparents</h5>
+      </div>
+      <div class="col-md-3 icon-box fade-in">
+        <i class="bi bi-phone text-info"></i>
+        <h5 data-i18n="available24h">📱 Disponible 24h/24</h5>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 section-faq fade-in text-center">
+  <div class="container">
+    <h2 class="mb-4" data-i18n="howItWorks">Comment ça marche ?</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <h5 data-i18n="step1">1️⃣ Créez un compte</h5>
+          <p><a href="inscription.html" data-i18n="signup">Inscription</a> ou <a href="connexion.html" data-i18n="login">connexion</a> <span data-i18n="step1Desc">simple et rapide</span></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-icon">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <h5 data-i18n="step2">2️⃣ Entrez les infos</h5>
+          <p><span data-i18n="step2Desc1">Entrer dans</span> <a href="envoie.html" data-i18n="sendMoney">Envoyez de l'argent</a> <span data-i18n="step2Desc2">ajoutez les détails du destinataire puis confirmez</span></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h5 data-i18n="step3">3️⃣ Envoyez l'argent</h5>
+          <p><span data-i18n="step3Desc1">En toute sécurité en quelques clics, et suivez vos</span> <a href="transactions.html" data-i18n="transactions">transactions</a> <span data-i18n="step3Desc2">en temps réel</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 section-faq fade-in">
+  <div class="container">
+    <h2 class="text-center mb-4" data-i18n="faq">FAQ</h2>
+    <div class="accordion" id="faqAccordion">
+      <div class="accordion-item card-animate">
+        <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" data-i18n="fees">Quels sont les frais ?</button></h2>
+        <div id="faq1" class="accordion-collapse collapse show"><div class="accordion-body" data-i18n="feesAnswer">Nous appliquons des frais fixes et transparents à chaque transfert.</div></div>
+      </div>
+      <div class="accordion-item card-animate">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" data-i18n="time">Combien de temps ça prend ?</button></h2>
+        <div id="faq2" class="accordion-collapse collapse"><div class="accordion-body" data-i18n="timeAnswer">La plupart des transferts sont effectués en moins de 10 minutes.</div></div>
+      </div>
+      <div class="accordion-item card-animate">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" data-i18n="security">Mes données sont-elles sécurisées ?</button></h2>
+        <div id="faq3" class="accordion-collapse collapse"><div class="accordion-body" data-i18n="securityAnswer">Oui, nous utilisons un chiffrement avancé pour protéger vos données.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-dark text-white pt-4 pb-3 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="py-5 text-center fade-in">
+        <div class="d-flex align-items-center justify-content-center mb-3">
+          <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40" class="me-2">
+          <h5 data-i18n="footerTitle">OWO-SENDER</h5>
+        </div>
+        <p data-i18n="footerSubtitle">Votre solution de transfert rapide depuis le Congo vers le Bénin.</p>
+      </div>
+      <div class="py-5 text-center fade-in">
+        <h6 data-i18n="usefulLinks">Liens utiles</h6>
+        <ul class="list-unstyled">
+          <li><a href="mentions-legales.html" style="color: #007bff !important; text-decoration: none;" data-i18n="legalNotice">Mentions légales</a></li>
+          <li><a href="politique-confidentialite.html" style="color: #007bff !important; text-decoration: none;" data-i18n="privacyPolicy">Politique de confidentialité</a></li>
+          <li><a href="contact.html" style="color: #007bff !important; text-decoration: none;"><i class="fas fa-headset me-2"></i><span data-i18n="supportContact">Support / Contact</span></a></li>
+        </ul>
+      </div>
+      <div class="py-5 text-center fade-in">
+        <h6 data-i18n="followUs">Suivez-nous</h6>
+        <div class="social-links">
+          <!-- Facebook -->
+          <a class="btn-floating facebook" href="#!" role="button">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+
+          <!-- TikTok -->
+          <a class="btn-floating tiktok" href="#" role="button">
+            <i class="fab fa-tiktok" style="color: white !important;"></i>
+          </a>
+
+          <!-- WhatsApp -->
+          <a class="btn-floating whatsapp" href="#!" role="button">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mt-3" data-i18n="copyright">&copy; OWO-SENDER</div>
+</footer>
+
+<script src="script.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="lang.js"></script>
+<script src="admin-auth.js"></script>
+<script src="dark-mode.js"></script>
+
+<script>
+  const name = localStorage.getItem("userName");
+  const email = localStorage.getItem("userEmail");
+  const avatar = document.getElementById("userAvatar");
+
+  if (email) {
+    document.getElementById("connexionBtn").classList.add("d-none");
+    document.getElementById("userWidget").classList.remove("d-none");
+    avatar.textContent = name?.trim().charAt(0).toUpperCase() || "?";
+    if (email === "igell7777@gmail.com") {
+      document.getElementById("adminBtn").classList.remove("d-none");
+      const contactLink = document.getElementById("contactLink");
+      if (contactLink) {
+        contactLink.href = "contact.html";
+        contactLink.innerHTML = '<i class="fas fa-envelope"></i> Contact';
+      }
+    }
+  }
+
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    window.location.href = "index.html";
+  });
+
+  const darkToggle = document.getElementById("darkModeToggle");
+  const isDark = localStorage.getItem("theme") === "dark";
+  if (isDark) document.body.classList.add("dark");
+  if (darkToggle) darkToggle.checked = isDark;
+  darkToggle?.addEventListener("change", function () {
+    document.body.classList.toggle("dark", this.checked);
+    localStorage.setItem("theme", this.checked ? "dark" : "light");
+  });
+
+  document.getElementById("sendMoneyBtn")?.addEventListener("click", () => {
+    window.location.href = email ? "envoie.html" : "connexion.html";
+  });
+
+  document.querySelectorAll(".fade-in").forEach(el => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.1 });
+    observer.observe(el);
+  });
+
+  // Ajout du comportement du header
+  let lastScroll = 0;
+  const navbar = document.querySelector('.navbar');
+  
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll <= 0) {
+      navbar.classList.remove('hide');
+      navbar.classList.add('show');
+      return;
+    }
+    
+    if (currentScroll > lastScroll && !navbar.classList.contains('hide')) {
+      // Défilement vers le bas
+      navbar.classList.remove('show');
+      navbar.classList.add('hide');
+    } else if (currentScroll < lastScroll && navbar.classList.contains('hide')) {
+      // Défilement vers le haut
+      navbar.classList.remove('hide');
+      navbar.classList.add('show');
+    }
+    
+    lastScroll = currentScroll;
+  });
+
+  // Animation des statistiques
+  function animateStats() {
+    const stats = document.querySelectorAll('.stats-number');
+    stats.forEach(stat => {
+      const value = parseInt(stat.getAttribute('data-value'));
+      const duration = 2000; // 2 secondes
+      const step = value / (duration / 16); // 60fps
+      let current = 0;
+      
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          const interval = setInterval(() => {
+            current += step;
+            if (current >= value) {
+              stat.textContent = value;
+              clearInterval(interval);
+            } else {
+              stat.textContent = Math.floor(current);
+            }
+          }, 16);
+          observer.unobserve(stat);
+        }
+      }, { threshold: 0.5 });
+      
+      observer.observe(stat);
+    });
+  }
+
+  // Appeler l'animation des statistiques
+  animateStats();
+
+  // Animation des cartes "Comment ça marche"
+  document.querySelectorAll('.step-card').forEach((card, index) => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          card.classList.add('visible');
+        }, index * 200); // Délai progressif pour chaque carte
+        observer.unobserve(card);
+      }
+    }, { threshold: 0.1 });
+    observer.observe(card);
+  });
+
+  // Animation des éléments
+  document.querySelectorAll('.fade-in, .card-animate, .accordion-item').forEach((element, index) => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          element.classList.add('visible');
+        }, index * 100); // Réduit de 200ms à 100ms
+        observer.unobserve(element);
+      }
+    }, { 
+      threshold: 0.1,
+      rootMargin: '50px' // Ajoute une marge pour déclencher l'animation plus tôt
+    });
+    observer.observe(element);
+  });
+</script>
+
+<style>
+  .btn-floating {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 5px;
+    text-decoration: none;
+  }
+
+  .btn-floating.facebook {
+    background-color: #1877f2;
+    color: white;
+  }
+
+  .btn-floating.tiktok {
+    background-color: black;
+  }
+
+  .btn-floating.tiktok i {
+    color: white !important;
+  }
+
+  .btn-floating.whatsapp {
+    background-color: #25d366;
+    color: white;
+  }
+
+  /* Styles pour le mode sombre */
+  body.dark {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  body.dark .navbar {
+    background-color: #2d2d2d !important;
+    border-bottom-color: #404040 !important;
+  }
+
+  body.dark .navbar-brand {
+    color: #ffffff !important;
+  }
+
+  body.dark .btn-outline-primary {
+    color: #4dabf7;
+    border-color: #4dabf7;
+  }
+
+  body.dark .btn-outline-primary:hover {
+    background-color: #4dabf7;
+    color: #ffffff;
+  }
+
+  body.dark .btn-outline-secondary {
+    color: #a0a0a0;
+    border-color: #505050;
+  }
+
+  body.dark .btn-outline-secondary:hover {
+    background-color: #505050;
+    border-color: #606060;
+    color: #ffffff;
+  }
+
+  body.dark .btn-outline-success {
+    color: #4caf50;
+    border-color: #4caf50;
+  }
+
+  body.dark .btn-outline-success:hover {
+    background-color: #4caf50;
+    color: #ffffff;
+  }
+
+  body.dark .dropdown-menu {
+    background-color: #2d2d2d;
+    border-color: #404040;
+  }
+
+  body.dark .dropdown-item {
+    color: #ffffff;
+  }
+
+  body.dark .dropdown-item:hover {
+    background-color: #404040;
+    color: #ffffff;
+  }
+
+  body.dark .dropdown-divider {
+    border-top-color: #404040;
+  }
+
+  body.dark .theme-switch .slider {
+    background-color: #404040;
+  }
+
+  body.dark .theme-switch input:checked + .slider {
+    background-color: #4dabf7;
+  }
+
+  .footer-link {
+    color: #0d6efd !important;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .footer-link:hover {
+    color: #0a58ca !important;
+    text-decoration: underline;
+  }
+
+  .hero {
+    position: relative;
+    padding: 4rem 0;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    display: block;
+  }
+
+  .hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    padding: 2rem;
+    z-index: 1;
+  }
+
+  .hero-content h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+
+  /* Styles pour le mode sombre */
+  body.dark .hero-image {
+    filter: brightness(0.9) contrast(1.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+
+  body.dark .hero-image:hover {
+    filter: brightness(1) contrast(1.1);
+  }
+
+  .step-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .step-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+
+  .step-icon {
+    width: 80px;
+    height: 80px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .step-icon i {
+    font-size: 2rem;
+    color: #0d6efd;
+  }
+
+  .step-card:hover .step-icon {
+    background: #0d6efd;
+    transform: scale(1.1);
+  }
+
+  .step-card:hover .step-icon i {
+    color: white;
+  }
+
+  /* Styles pour le mode sombre */
+  body.dark .step-card {
+    background: #2d2d2d;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  body.dark .step-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+
+  body.dark .step-icon {
+    background: #3d3d3d;
+  }
+
+  body.dark .step-icon i {
+    color: #4dabf7;
+  }
+
+  body.dark .step-card:hover .step-icon {
+    background: #4dabf7;
+  }
+
+  body.dark .step-card:hover .step-icon i {
+    color: #ffffff;
+  }
+</style>
+
+</body>
+</html>

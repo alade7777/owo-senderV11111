@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="legalNoticeTitle">Mentions Légales - OWO-SENDER</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            padding-top: 76px; /* Ajout d'un padding-top pour compenser la hauteur de la navbar */
+        }
+        .legal-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .legal-section:hover {
+            transform: translateY(-5px);
+        }
+        .legal-section h2 {
+            color: #0d6efd;
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .legal-section p {
+            color: #666;
+            line-height: 1.8;
+        }
+        .legal-section strong {
+            color: #333;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        .contact-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+        .contact-info i {
+            color: #0d6efd;
+            margin-right: 10px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            background: white !important;
+        }
+
+        /* Styles pour le mode sombre */
+        body.dark {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        body.dark .legal-section {
+            background: #2d2d2d;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+            border: 1px solid #3d3d3d;
+        }
+
+        body.dark .legal-section h2 {
+            color: #4dabf7;
+            border-bottom-color: #4dabf7;
+        }
+
+        body.dark .legal-section p {
+            color: #b0b0b0;
+        }
+
+        body.dark .legal-section strong {
+            color: #e0e0e0;
+        }
+
+        body.dark .contact-info {
+            background: #333333;
+            border: 1px solid #3d3d3d;
+        }
+
+        body.dark .contact-info p {
+            color: #b0b0b0;
+        }
+
+        body.dark .contact-info i {
+            color: #4dabf7;
+        }
+
+        body.dark .navbar {
+            background: #2d2d2d !important;
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        body.dark .btn-outline-primary {
+            color: #4dabf7;
+            border-color: #4dabf7;
+        }
+
+        body.dark .btn-outline-primary:hover {
+            background-color: #4dabf7;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-light px-4 py-3 border-bottom">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a href="index.html" class="btn btn-outline-primary rounded-pill">
+                    <i class="fas fa-arrow-left me-2"></i><span data-i18n="back">Retour</span>
+                </a>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <!-- Suppression du sélecteur de langue -->
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header text-center">
+        <div class="container">
+            <h1 data-i18n="legalNotice">Mentions Légales</h1>
+        </div>
+    </div>
+
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="legalInfo">1. Informations légales</h2>
+                    <p data-i18n="legalInfoText">OWO-SENDER est un service de transfert d'argent en ligne.</p>
+                    <div class="contact-info">
+                        <p><i class="fas fa-building"></i> <strong data-i18n="headquarters">Siège social :</strong> <span data-i18n="headquartersAddress">[Adresse du siège social]</span></p>
+                        <p><i class="fas fa-envelope"></i> <strong data-i18n="email">Email :</strong> <span data-i18n="contactEmail">contact@owo-sender.com</span></p>
+                        <p><i class="fas fa-phone"></i> <strong data-i18n="phone">Téléphone :</strong> <span data-i18n="contactPhone">[Numéro de téléphone]</span></p>
+                    </div>
+                </section>
+
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="hosting">2. Hébergement</h2>
+                    <p data-i18n="hostingText">Ce site est hébergé par :</p>
+                    <div class="contact-info">
+                        <p><i class="fas fa-server"></i> <strong data-i18n="hostName">Nom :</strong> <span data-i18n="hostNameValue">[Nom de l'hébergeur]</span></p>
+                        <p><i class="fas fa-map-marker-alt"></i> <strong data-i18n="hostAddress">Adresse :</strong> <span data-i18n="hostAddressValue">[Adresse de l'hébergeur]</span></p>
+                        <p><i class="fas fa-phone"></i> <strong data-i18n="hostPhone">Téléphone :</strong> <span data-i18n="hostPhoneValue">[Téléphone de l'hébergeur]</span></p>
+                    </div>
+                </section>
+
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="intellectualProperty">3. Propriété intellectuelle</h2>
+                    <p data-i18n="intellectualPropertyText">L'ensemble de ce site relève de la législation béninoise et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.</p>
+                </section>
+
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="dataProtection">4. Protection des données personnelles</h2>
+                    <p data-i18n="dataProtectionText">Conformément à la loi relative à l'informatique, aux fichiers et aux libertés, vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant. Pour exercer ce droit, vous pouvez nous contacter à l'adresse email mentionnée ci-dessus.</p>
+                </section>
+
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="cookies">5. Cookies</h2>
+                    <p data-i18n="cookiesText">Notre site utilise des cookies pour améliorer votre expérience de navigation. Vous pouvez à tout moment désactiver l'utilisation de cookies en sélectionnant les paramètres appropriés de votre navigateur.</p>
+                </section>
+
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="applicableLaw">6. Droit applicable</h2>
+                    <p data-i18n="applicableLawText">Les présentes mentions légales sont soumises au droit béninois. En cas de litige, les tribunaux béninois seront seuls compétents.</p>
+                </section>
+
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="legalInfoDetails">Informations légales détaillées</h2>
+                    <p data-i18n="legalInfoDetailsText">OWO-SENDER est un service de transfert d'argent en ligne opérant au Bénin et au Congo.</p>
+                    <p data-i18n="legalInfoDetailsText2">Notre service est conforme aux réglementations en vigueur dans les deux pays.</p>
+                    <p data-i18n="legalInfoDetailsText3">Nous nous engageons à respecter les lois et réglementations applicables.</p>
+                    <p data-i18n="legalInfoDetailsText4">Notre service est soumis aux lois béninoises et congolaises.</p>
+                    <p data-i18n="legalInfoDetailsText5">Nous nous réservons le droit de modifier ces mentions légales à tout moment.</p>
+                    <p data-i18n="legalInfoDetailsText6">Les modifications prendront effet dès leur publication sur le site.</p>
+                    <p data-i18n="legalInfoDetailsText7">Nous vous invitons à consulter régulièrement cette page.</p>
+                    <p data-i18n="legalInfoDetailsText8">En cas de litige, les tribunaux béninois seront seuls compétents.</p>
+                    <p data-i18n="legalInfoDetailsText9">Nous nous engageons à respecter la confidentialité de vos données.</p>
+                </section>
+
+                <section class="legal-section">
+                    <h2 class="h4" data-i18n="legalInfoDetails">Informations légales détaillées</h2>
+                    <p data-i18n="legalInfoDetailsText10">Nous nous réservons le droit de modifier ces mentions légales à tout moment.</p>
+                    <p data-i18n="legalInfoDetailsText11">Les modifications prendront effet dès leur publication sur le site.</p>
+                    <p data-i18n="legalInfoDetailsText12">Nous vous invitons à consulter régulièrement cette page.</p>
+                    <p data-i18n="legalInfoDetailsText13">En cas de litige, les tribunaux béninois seront seuls compétents.</p>
+                    <p data-i18n="legalInfoDetailsText14">Nous nous engageons à respecter la confidentialité de vos données.</p>
+                    <p data-i18n="legalInfoDetailsText15">Nous nous réservons le droit de modifier ces mentions légales à tout moment.</p>
+                    <p data-i18n="legalInfoDetailsText16">Les modifications prendront effet dès leur publication sur le site.</p>
+                    <p data-i18n="legalInfoDetailsText17">Nous vous invitons à consulter régulièrement cette page.</p>
+                    <p data-i18n="legalInfoDetailsText18">En cas de litige, les tribunaux béninois seront seuls compétents.</p>
+                    <p data-i18n="legalInfoDetailsText19">Nous nous engageons à respecter la confidentialité de vos données.</p>
+                    <p data-i18n="legalInfoDetailsText20">Nous nous réservons le droit de modifier ces mentions légales à tout moment.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white pt-4 pb-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40" class="me-2">
+                        <h5 data-i18n="footerTitle">OWO-SENDER</h5>
+                    </div>
+                    <p data-i18n="footerSubtitle">Votre solution de transfert rapide depuis le Congo vers le Bénin.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h6 data-i18n="usefulLinks">Liens utiles</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="mentions-legales.html" style="color: #007bff !important; text-decoration: none;" data-i18n="legalNotice">Mentions légales</a></li>
+                        <li><a href="politique-confidentialite.html" style="color: #007bff !important; text-decoration: none;" data-i18n="privacyPolicy">Politique de confidentialité</a></li>
+                        <li><a href="contact.html" style="color: #007bff !important; text-decoration: none;"><i class="fas fa-headset me-2"></i><span data-i18n="supportContact">Support / Contact</span></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h6 data-i18n="followUs">Suivez-nous</h6>
+                    <div class="social-links">
+                        <a class="btn btn-outline-light btn-floating m-1 facebook" href="#!" role="button">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="btn btn-outline-light btn-floating m-1 tiktok" href="#" role="button">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a class="btn btn-outline-light btn-floating m-1 whatsapp" href="#!" role="button">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-3" data-i18n="copyright">&copy; OWO-SENDER</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lang.js"></script>
+    <script src="dark-mode.js"></script>
+    <script>
+        // Initialiser la langue au chargement
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem("lang") || "fr";
+            updateLanguage(savedLang);
+        });
+    </script>
+</body>
+</html> 

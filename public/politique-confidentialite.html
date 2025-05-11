@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="privacyPolicyTitle">Politique de Confidentialité - OWO-SENDER</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="lang.js"></script>
+    <style>
+        body {
+            padding-top: 76px; /* Ajout d'un padding-top pour compenser la hauteur de la navbar */
+        }
+        .legal-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .legal-section:hover {
+            transform: translateY(-5px);
+        }
+        .legal-section h2 {
+            color: #0d6efd;
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .legal-section p {
+            color: #666;
+            line-height: 1.8;
+        }
+        .legal-section ul {
+            color: #666;
+            line-height: 1.8;
+            padding-left: 1.2rem;
+        }
+        .legal-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        .contact-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+        .contact-info i {
+            color: #0d6efd;
+            margin-right: 10px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            background: white !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-light px-4 py-3 border-bottom">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a href="index.html" class="btn btn-outline-primary rounded-pill">
+                    <i class="fas fa-arrow-left me-2"></i><span data-i18n="back">Retour</span>
+                </a>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-globe me-2"></i><span data-i18n="language">Langue</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('fr')">Français</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header text-center">
+        <div class="container">
+            <h1 data-i18n="privacyPolicy">Politique de Confidentialité</h1>
+        </div>
+    </div>
+
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="dataCollection">1. Collecte des informations</h2>
+                    <p data-i18n="dataCollectionText">Nous collectons les informations suivantes :</p>
+                    <ul>
+                        <li data-i18n="collectedInfoList.name">Nom et prénom</li>
+                        <li data-i18n="collectedInfoList.email">Adresse email</li>
+                        <li data-i18n="collectedInfoList.phone">Numéro de téléphone</li>
+                        <li data-i18n="collectedInfoList.address">Adresse postale</li>
+                        <li data-i18n="collectedInfoList.payment">Informations de paiement</li>
+                    </ul>
+                    <p data-i18n="collectedInfo">Ces informations sont collectées lors de :</p>
+                    <ul>
+                        <li data-i18n="collectionOccasions.account">Création de compte</li>
+                        <li data-i18n="collectionOccasions.transfer">Effectuation de transferts</li>
+                        <li data-i18n="collectionOccasions.contact">Contact avec notre service client</li>
+                    </ul>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="dataUsage">2. Utilisation des informations</h2>
+                    <p data-i18n="dataUsageText">Les informations collectées sont utilisées pour :</p>
+                    <ul>
+                        <li data-i18n="dataUsageList.process">Traiter vos transferts d'argent</li>
+                        <li data-i18n="dataUsageList.improve">Améliorer notre service</li>
+                        <li data-i18n="dataUsageList.communicate">Communiquer avec vous</li>
+                        <li data-i18n="dataUsageList.legal">Respecter nos obligations légales</li>
+                    </ul>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="dataProtection">3. Protection des informations</h2>
+                    <p data-i18n="dataProtectionText">Nous mettons en œuvre une variété de mesures de sécurité pour préserver la sécurité de vos informations personnelles :</p>
+                    <ul>
+                        <li data-i18n="securityMeasures.ssl">Cryptage SSL</li>
+                        <li data-i18n="securityMeasures.2fa">Authentification à deux facteurs</li>
+                        <li data-i18n="securityMeasures.monitoring">Surveillance continue</li>
+                        <li data-i18n="securityMeasures.training">Formation du personnel</li>
+                    </ul>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="dataSharing">4. Partage des informations</h2>
+                    <p data-i18n="dataSharingText">Nous ne vendons, n'échangeons et ne transférons pas vos informations personnelles à des tiers. Cela ne comprend pas les tierces parties de confiance qui nous aident à exploiter notre site web ou à mener nos activités, tant que ces parties conviennent de garder ces informations confidentielles.</p>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="yourRights">5. Vos droits</h2>
+                    <p data-i18n="yourRightsText">Conformément au RGPD, vous disposez des droits suivants :</p>
+                    <ul>
+                        <li data-i18n="rightsList.access">Droit d'accès à vos données</li>
+                        <li data-i18n="rightsList.rectification">Droit de rectification</li>
+                        <li data-i18n="rightsList.erasure">Droit à l'effacement</li>
+                        <li data-i18n="rightsList.restriction">Droit à la limitation du traitement</li>
+                        <li data-i18n="rightsList.portability">Droit à la portabilité des données</li>
+                        <li data-i18n="rightsList.objection">Droit d'opposition</li>
+                    </ul>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="modifications">7. Modifications</h2>
+                    <p data-i18n="modificationsText">Nous nous réservons le droit de modifier cette politique de confidentialité à tout moment. Les modifications prendront effet dès leur publication sur le site.</p>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="contact">8. Contact</h2>
+                    <p data-i18n="contactText">Pour toute question concernant cette politique de confidentialité, vous pouvez nous contacter à :</p>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> <strong data-i18n="email">Email :</strong> <span data-i18n="privacyEmail">privacy@owo-sender.com</span></p>
+                        <p><i class="fas fa-phone"></i> <strong data-i18n="phone">Téléphone :</strong> <span data-i18n="privacyPhone">[Numéro de téléphone]</span></p>
+                    </div>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="privacyInfoDetails">Informations de confidentialité détaillées</h2>
+                    <p data-i18n="privacyInfoDetailsText">Nous collectons et traitons vos données personnelles conformément au RGPD.</p>
+                    <p data-i18n="privacyInfoDetailsText2">Nous nous engageons à protéger vos données personnelles.</p>
+                    <p data-i18n="privacyInfoDetailsText3">Nous ne partageons pas vos données avec des tiers non autorisés.</p>
+                    <p data-i18n="privacyInfoDetailsText4">Vous pouvez exercer vos droits à tout moment.</p>
+                    <p data-i18n="privacyInfoDetailsText5">Nous mettons en œuvre des mesures de sécurité appropriées.</p>
+                    <p data-i18n="privacyInfoDetailsText6">Nous conservons vos données pendant une durée limitée.</p>
+                    <p data-i18n="privacyInfoDetailsText7">Vous pouvez nous contacter pour toute question.</p>
+                    <p data-i18n="privacyInfoDetailsText8">Nous nous engageons à vous répondre dans les meilleurs délais.</p>
+                    <p data-i18n="privacyInfoDetailsText9">Nous mettons à jour régulièrement notre politique de confidentialité.</p>
+                    <p data-i18n="privacyInfoDetailsText10">Nous vous informons de toute modification importante.</p>
+                </section>
+
+                <section class="privacy-section">
+                    <h2 class="h4" data-i18n="privacyInfoDetails">Informations de confidentialité détaillées</h2>
+                    <p data-i18n="privacyInfoDetailsText11">Vous pouvez nous contacter pour toute question.</p>
+                    <p data-i18n="privacyInfoDetailsText12">Nous nous engageons à vous répondre dans les meilleurs délais.</p>
+                    <p data-i18n="privacyInfoDetailsText13">Nous mettons à jour régulièrement notre politique de confidentialité.</p>
+                    <p data-i18n="privacyInfoDetailsText14">Nous vous informons de toute modification importante.</p>
+                    <p data-i18n="privacyInfoDetailsText15">Vous pouvez nous contacter pour toute question.</p>
+                    <p data-i18n="privacyInfoDetailsText16">Nous nous engageons à vous répondre dans les meilleurs délais.</p>
+                    <p data-i18n="privacyInfoDetailsText17">Nous mettons à jour régulièrement notre politique de confidentialité.</p>
+                    <p data-i18n="privacyInfoDetailsText18">Nous vous informons de toute modification importante.</p>
+                    <p data-i18n="privacyInfoDetailsText19">Vous pouvez nous contacter pour toute question.</p>
+                    <p data-i18n="privacyInfoDetailsText20">Nous nous engageons à vous répondre dans les meilleurs délais.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white pt-4 pb-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40" class="me-2">
+                        <h5 data-i18n="footerTitle">OWO-SENDER</h5>
+                    </div>
+                    <p data-i18n="footerSubtitle">Votre solution de transfert rapide depuis le Congo vers le Bénin.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h6 data-i18n="usefulLinks">Liens utiles</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="mentions-legales.html" style="color: #007bff !important; text-decoration: none;" data-i18n="legalNotice">Mentions légales</a></li>
+                        <li><a href="politique-confidentialite.html" style="color: #007bff !important; text-decoration: none;" data-i18n="privacyPolicy">Politique de confidentialité</a></li>
+                        <li><a href="contact.html" style="color: #007bff !important; text-decoration: none;"><i class="fas fa-headset me-2"></i><span data-i18n="supportContact">Support / Contact</span></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h6 data-i18n="followUs">Suivez-nous</h6>
+                    <div class="social-links">
+                        <a class="btn btn-outline-light btn-floating m-1 facebook" href="#!" role="button">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="btn btn-outline-light btn-floating m-1 tiktok" href="#" role="button">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a class="btn btn-outline-light btn-floating m-1 whatsapp" href="#!" role="button">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-3" data-i18n="copyright">&copy; OWO-SENDER</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialiser la langue au chargement
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem("lang") || "fr";
+            updateLanguage(savedLang);
+        });
+    </script>
+</body>
+</html> 

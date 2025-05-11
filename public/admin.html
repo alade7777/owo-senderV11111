@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="adminTitle">Admin - Gestion des Transferts</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .dropdown-toggle::after { display: none !important; }
+    .table td, .table th { vertical-align: middle; }
+    .transaction-card {
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .badge {
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .btn-action {
+      border-radius: 20px;
+      padding: 5px 15px;
+    }
+    .stats-card {
+      background: linear-gradient(45deg, #4e73df, #224abe);
+      color: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .stats-card i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 border-bottom">
+  <div class="container-fluid align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40">
+      </a>
+    </div>
+    <h5 class="mb-0" data-i18n="adminTitle">Admin - Gestion des Transferts</h5>
+    <div class="d-flex align-items-center gap-3">
+      <select id="languageSelect" class="form-select form-select-sm" style="width: auto;">
+        <option value="fr">Français</option>
+        <option value="en">English</option>
+      </select>
+      <div id="userWidget">
+        <div class="dropdown">
+          <button class="btn p-0 border-0 bg-transparent" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div id="userAvatar" class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;">A</div>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container my-4">
+  <!-- Statistiques -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="stats-card">
+        <i class="fas fa-check-circle"></i>
+        <h3 id="completedCount">0</h3>
+        <p class="mb-0">Transactions complétées</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card" style="background: linear-gradient(45deg, #1cc88a, #13855c);">
+        <i class="fas fa-money-bill-wave"></i>
+        <h3 id="totalAmount">0 FCFA</h3>
+        <p class="mb-0">Montant total</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stats-card" style="background: linear-gradient(45deg, #f6c23e, #dda20a);">
+        <i class="fas fa-clock"></i>
+        <h3 id="pendingCount">0</h3>
+        <p class="mb-0">En attente</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres Transferts -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" id="searchInput" class="form-control" data-i18n-placeholder="search" placeholder="🔍 Rechercher par nom ou numéro...">
+    </div>
+    <div class="col-md-4">
+      <select id="filterStatut" class="form-select">
+        <option value="" data-i18n="filterAll">📂 Filtrer par statut</option>
+        <option value="En attente" data-i18n="pending">En attente</option>
+        <option value="Terminé" data-i18n="completed">Terminé</option>
+        <option value="Annulé" data-i18n="cancelled">Annulé</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tableau des Transferts -->
+  <div id="transfertContainer" class="table-responsive mb-5">
+    <h4 class="mb-3">Liste des Transferts</h4>
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th data-i18n="date">Date</th>
+          <th data-i18n="country">Pays</th>
+          <th data-i18n="amount">Montant</th>
+          <th data-i18n="total">Total</th>
+          <th data-i18n="name">Nom</th>
+          <th data-i18n="phone">Numéro</th>
+          <th data-i18n="senderName">Envoyeur</th>
+          <th data-i18n="senderPhone">Tél. Envoyeur</th>
+          <th data-i18n="operator">Opérateur</th>
+          <th data-i18n="status">Statut</th>
+          <th data-i18n="action">Action</th>
+        </tr>
+      </thead>
+      <tbody id="transfertTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Filtres Transactions -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input type="text" id="transactionSearch" class="form-control" placeholder="🔍 Rechercher par ID, nom ou numéro...">
+    </div>
+    <div class="col-md-4">
+      <select id="transactionStatus" class="form-select">
+        <option value="">📂 Tous les statuts</option>
+        <option value="pending">En attente</option>
+        <option value="completed">Complétées</option>
+        <option value="failed">Échouées</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <input type="date" class="form-control" id="transactionDate">
+    </div>
+  </div>
+
+  <!-- Tableau des Transactions -->
+  <div class="transaction-card">
+    <h4 class="mb-3">Liste des Transactions</h4>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>ID Transaction</th>
+              <th>Date</th>
+              <th>Expéditeur</th>
+              <th>Destinataire</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsList">
+            <!-- Les transactions seront ajoutées ici dynamiquement -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal de confirmation -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmer l'action</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" id="confirmAction">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="adminToast" class="toast align-items-center text-bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="adminToastMsg">Action réussie !</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="lang.js"></script>
+<script src="dark-mode.js"></script>
+<script src="admin-auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let transfertsOriginaux = [];
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const langSelect = document.getElementById("languageSelect");
+    const savedLang = localStorage.getItem("lang") || "fr";
+    langSelect.value = savedLang;
+    updateLanguage(savedLang);
+
+    langSelect.addEventListener("change", () => {
+      const lang = langSelect.value;
+      localStorage.setItem("lang", lang);
+      updateLanguage(lang);
+    });
+
+    await chargerTransferts();
+    loadTransactions();
+
+    document.getElementById("searchInput").addEventListener("input", filtrer);
+    document.getElementById("filterStatut").addEventListener("change", filtrer);
+    document.getElementById("transactionSearch").addEventListener("input", loadTransactions);
+    document.getElementById("transactionStatus").addEventListener("change", loadTransactions);
+    document.getElementById("transactionDate").addEventListener("change", loadTransactions);
+  });
+
+  // Vérification de l'authentification admin
+  const email = localStorage.getItem("userEmail");
+  if (email !== "igell7777@gmail.com") {
+    window.location.href = "connexion.html";
+  }
+
+  // Gestion de la déconnexion
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    window.location.href = "index.html";
+  });
+
+  // Fonction pour mettre à jour les statistiques
+  function updateStats(transactions) {
+    const completed = transactions.filter(t => t.status === 'completed').length;
+    const pending = transactions.filter(t => t.status === 'pending').length;
+    const totalAmount = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+
+    document.getElementById('completedCount').textContent = completed;
+    document.getElementById('pendingCount').textContent = pending;
+    document.getElementById('totalAmount').textContent = totalAmount.toLocaleString() + ' FCFA';
+  }
+
+  // Fonction pour charger les transactions
+  function loadTransactions() {
+    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    const transactionsList = document.getElementById('transactionsList');
+    transactionsList.innerHTML = '';
+
+    // Mettre à jour les statistiques
+    updateStats(transactions);
+
+    // Appliquer les filtres
+    const search = document.getElementById('transactionSearch').value.toLowerCase();
+    const status = document.getElementById('transactionStatus').value;
+    const date = document.getElementById('transactionDate').value;
+
+    const filteredTransactions = transactions.filter(transaction => {
+      const matchesSearch = !search || 
+        transaction.id.toLowerCase().includes(search) ||
+        (transaction.sender && transaction.sender.toLowerCase().includes(search)) ||
+        (transaction.recipient && transaction.recipient.toLowerCase().includes(search));
+      
+      const matchesStatus = !status || transaction.status === status;
+      
+      const matchesDate = !date || transaction.date.startsWith(date);
+
+      return matchesSearch && matchesStatus && matchesDate;
+    });
+
+    filteredTransactions.forEach(transaction => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${transaction.id}</td>
+        <td>
+          <div class="fw-bold">${new Date(transaction.date).toLocaleDateString()}</div>
+          <small class="text-muted">${new Date(transaction.date).toLocaleTimeString()}</small>
+        </td>
+        <td>
+          <div class="fw-bold">${transaction.sender || 'N/A'}</div>
+          <small class="text-muted">${transaction.senderEmail || ''}</small>
+        </td>
+        <td>
+          <div class="fw-bold">${transaction.recipient}</div>
+          <small class="text-muted">${transaction.recipientPhone || ''}</small>
+        </td>
+        <td>
+          <div class="fw-bold">${transaction.amount.toLocaleString()} FCFA</div>
+          <small class="text-muted">Frais: ${(transaction.fees || 0).toLocaleString()} FCFA</small>
+        </td>
+        <td>
+          <span class="badge ${getStatusBadgeClass(transaction.status)}">
+            ${getStatusText(transaction.status)}
+          </span>
+        </td>
+        <td>
+          <div class="btn-group">
+            ${transaction.status === 'pending' ? `
+              <button class="btn btn-action btn-success me-2" onclick="updateTransactionStatus('${transaction.id}', 'completed')">
+                <i class="fas fa-check me-1"></i> Valider
+              </button>
+              <button class="btn btn-action btn-danger" onclick="updateTransactionStatus('${transaction.id}', 'failed')">
+                <i class="fas fa-times me-1"></i> Rejeter
+              </button>
+            ` : `
+              <button class="btn btn-action btn-primary" onclick="viewTransactionDetails('${transaction.id}')">
+                <i class="fas fa-eye me-1"></i> Détails
+              </button>
+            `}
+          </div>
+        </td>
+      `;
+      transactionsList.appendChild(row);
+    });
+  }
+
+  // Fonction pour obtenir la classe CSS du badge selon le statut
+  function getStatusBadgeClass(status) {
+    switch(status.toLowerCase()) {
+      case 'completed':
+        return 'bg-success';
+      case 'pending':
+        return 'bg-warning';
+      case 'failed':
+        return 'bg-danger';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
+  // Fonction pour obtenir le texte du statut
+  function getStatusText(status) {
+    switch(status.toLowerCase()) {
+      case 'completed':
+        return 'Complétée';
+      case 'pending':
+        return 'En attente';
+      case 'failed':
+        return 'Échouée';
+      default:
+        return status;
+    }
+  }
+
+  // Fonction pour mettre à jour le statut d'une transaction
+  function updateTransactionStatus(transactionId, newStatus) {
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmAction = document.getElementById('confirmAction');
+
+    confirmMessage.textContent = `Êtes-vous sûr de vouloir marquer cette transaction comme ${getStatusText(newStatus).toLowerCase()} ?`;
+    
+    confirmAction.onclick = () => {
+      // Récupérer toutes les transactions
+      const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+      const transactionIndex = transactions.findIndex(t => t.id === transactionId);
+      
+      if (transactionIndex !== -1) {
+        // Mettre à jour le statut
+        transactions[transactionIndex].status = newStatus;
+        transactions[transactionIndex].updatedAt = new Date().toISOString();
+        
+        // Sauvegarder dans localStorage
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        
+        // Mettre à jour l'affichage
+        loadTransactions();
+        confirmModal.hide();
+        showToast(`Transaction marquée comme ${getStatusText(newStatus).toLowerCase()}`);
+
+        // Émettre un événement personnalisé pour notifier les autres pages
+        const event = new CustomEvent('transactionUpdated', {
+          detail: {
+            transactionId: transactionId,
+            newStatus: newStatus,
+            updatedAt: transactions[transactionIndex].updatedAt
+          }
+        });
+        window.dispatchEvent(event);
+      }
+    };
+
+    confirmModal.show();
+  }
+
+  // Fonction pour voir les détails d'une transaction
+  function viewTransactionDetails(id) {
+    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    const transaction = transactions.find(t => t.id === id);
+    
+    if (transaction) {
+      alert(`
+        Détails de la transaction:
+        ID: ${transaction.id}
+        Date: ${new Date(transaction.date).toLocaleString()}
+        Expéditeur: ${transaction.sender || 'N/A'}
+        Destinataire: ${transaction.recipient}
+        Montant: ${transaction.amount.toLocaleString()} FCFA
+        Frais: ${(transaction.fees || 0).toLocaleString()} FCFA
+        Statut: ${getStatusText(transaction.status)}
+        ${transaction.updatedAt ? `Dernière mise à jour: ${new Date(transaction.updatedAt).toLocaleString()}` : ''}
+      `);
+    }
+  }
+
+  async function chargerTransferts() {
+    try {
+      const res = await fetch("/api/send/all");
+      transfertsOriginaux = await res.json();
+      afficherTransferts(transfertsOriginaux);
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors du chargement des transferts");
+    }
+  }
+
+  function afficherTransferts(data) {
+    const tableBody = document.getElementById("transfertTableBody");
+    tableBody.innerHTML = "";
+
+    data.forEach((t, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${new Date(t.date).toLocaleString()}</td>
+        <td>${t.pays}</td>
+        <td>${t.montant} FCFA</td>
+        <td>${t.total} FCFA</td>
+        <td>${t.nom}</td>
+        <td>${t.numero}</td>
+        <td>${t.envoyeurNom || 'Non spécifié'}</td>
+        <td>${t.envoyeurNumero || 'Non spécifié'}</td>
+        <td>${t.operateur}</td>
+        <td>
+          <select class="form-select form-select-sm" data-index="${i}">
+            <option ${t.statut === "En attente" ? "selected" : ""} data-i18n="pending">En attente</option>
+            <option ${t.statut === "Terminé" ? "selected" : ""} data-i18n="completed">Terminé</option>
+            <option ${t.statut === "Annulé" ? "selected" : ""} data-i18n="cancelled">Annulé</option>
+          </select>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteTransfert(${i})">🗑</button>
+        </td>
+      `;
+      tableBody.appendChild(tr);
+    });
+
+    document.querySelectorAll("select[data-index]").forEach(select => {
+      select.addEventListener("change", async function () {
+        const index = this.dataset.index;
+        const statut = this.value;
+        try {
+          const res = await fetch(`/api/send/update/${index}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ statut })
+          });
+          const msg = await res.json();
+          if (res.ok) showToast("✅ Statut mis à jour");
+          else alert(msg.message || "Erreur");
+        } catch {
+          alert("Erreur réseau.");
+        }
+      });
+    });
+  }
+
+  function filtrer() {
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    const statut = document.getElementById("filterStatut").value;
+
+    const filtres = transfertsOriginaux.filter(t =>
+      (t.nom.toLowerCase().includes(search) || t.numero.includes(search)) &&
+      (statut === "" || t.statut === statut)
+    );
+
+    afficherTransferts(filtres);
+  }
+
+  async function deleteTransfert(index) {
+    if (!confirm("Confirmer la suppression de ce transfert ?")) return;
+    try {
+      const res = await fetch(`/api/send/delete/${index}`, { method: "DELETE" });
+      const msg = await res.json();
+      if (res.ok) {
+        showToast("🗑 Transfert supprimé !");
+        await chargerTransferts();
+      } else {
+        alert(msg.message || "Erreur serveur.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau.");
+    }
+  }
+
+  function showToast(message) {
+    const toastEl = document.getElementById("adminToast");
+    const toastMsg = document.getElementById("adminToastMsg");
+    toastMsg.textContent = message;
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  }
+
+  function updateLanguage(lang) {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      if (translations[lang] && translations[lang][key]) {
+        el.textContent = translations[lang][key];
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+      const key = el.getAttribute("data-i18n-placeholder");
+      if (translations[lang] && translations[lang][key]) {
+        el.setAttribute("placeholder", translations[lang][key]);
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration des Transactions - OWO-SENDER</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .transaction-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .btn-action {
+            border-radius: 20px;
+            padding: 5px 15px;
+        }
+        .filter-card {
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 border-bottom">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand fw-bold me-4" href="admin.html">
+                    <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40">
+                </a>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="admin.html" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+                <div id="userWidget">
+                    <div class="dropdown">
+                        <button class="btn p-0 border-0 bg-transparent" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div id="userAvatar" class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;">A</div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-tasks me-2"></i>Gestion des Transactions
+                </h2>
+
+                <!-- Filtres -->
+                <div class="filter-card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label"><i class="fas fa-filter me-2"></i>Statut</label>
+                                <select class="form-select" id="statusFilter">
+                                    <option value="all">Tous</option>
+                                    <option value="pending">En attente</option>
+                                    <option value="completed">Complétées</option>
+                                    <option value="failed">Échouées</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label"><i class="fas fa-calendar me-2"></i>Date</label>
+                                <input type="date" class="form-control" id="dateFilter">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label"><i class="fas fa-search me-2"></i>Recherche</label>
+                                <input type="text" class="form-control" id="searchFilter" placeholder="ID, destinataire...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des transactions -->
+                <div class="transaction-card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID Transaction</th>
+                                        <th>Date</th>
+                                        <th>Expéditeur</th>
+                                        <th>Destinataire</th>
+                                        <th>Montant</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsList">
+                                    <!-- Les transactions seront ajoutées ici dynamiquement -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer l'action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="confirmAction">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script src="lang.js"></script>
+    <script src="dark-mode.js"></script>
+    <script src="admin-auth.js"></script>
+    <script>
+        // Vérification de l'authentification admin
+        const email = localStorage.getItem("userEmail");
+        if (email !== "igell7777@gmail.com") {
+            window.location.href = "connexion.html";
+        }
+
+        // Gestion de la déconnexion
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userEmail");
+            window.location.href = "index.html";
+        });
+
+        // Fonction pour charger les transactions
+        function loadTransactions() {
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            const transactionsList = document.getElementById('transactionsList');
+            transactionsList.innerHTML = '';
+
+            transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.id}</td>
+                    <td>
+                        <div class="fw-bold">${new Date(transaction.date).toLocaleDateString()}</div>
+                        <small class="text-muted">${new Date(transaction.date).toLocaleTimeString()}</small>
+                    </td>
+                    <td>
+                        <div class="fw-bold">${transaction.sender || 'N/A'}</div>
+                        <small class="text-muted">${transaction.senderEmail || ''}</small>
+                    </td>
+                    <td>
+                        <div class="fw-bold">${transaction.recipient}</div>
+                        <small class="text-muted">${transaction.recipientPhone || ''}</small>
+                    </td>
+                    <td>
+                        <div class="fw-bold">${transaction.amount.toLocaleString()} FCFA</div>
+                        <small class="text-muted">Frais: ${(transaction.fees || 0).toLocaleString()} FCFA</small>
+                    </td>
+                    <td>
+                        <span class="badge ${getStatusBadgeClass(transaction.status)}">
+                            ${getStatusText(transaction.status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            ${transaction.status === 'pending' ? `
+                                <button class="btn btn-action btn-success me-2" onclick="updateTransactionStatus('${transaction.id}', 'completed')">
+                                    <i class="fas fa-check me-1"></i> Valider
+                                </button>
+                                <button class="btn btn-action btn-danger" onclick="updateTransactionStatus('${transaction.id}', 'failed')">
+                                    <i class="fas fa-times me-1"></i> Rejeter
+                                </button>
+                            ` : `
+                                <button class="btn btn-action btn-primary" onclick="viewTransactionDetails('${transaction.id}')">
+                                    <i class="fas fa-eye me-1"></i> Détails
+                                </button>
+                            `}
+                        </div>
+                    </td>
+                `;
+                transactionsList.appendChild(row);
+            });
+        }
+
+        // Fonction pour obtenir la classe CSS du badge selon le statut
+        function getStatusBadgeClass(status) {
+            switch(status.toLowerCase()) {
+                case 'completed':
+                    return 'bg-success';
+                case 'pending':
+                    return 'bg-warning';
+                case 'failed':
+                    return 'bg-danger';
+                default:
+                    return 'bg-secondary';
+            }
+        }
+
+        // Fonction pour obtenir le texte du statut
+        function getStatusText(status) {
+            switch(status.toLowerCase()) {
+                case 'completed':
+                    return 'Complétée';
+                case 'pending':
+                    return 'En attente';
+                case 'failed':
+                    return 'Échouée';
+                default:
+                    return status;
+            }
+        }
+
+        // Fonction pour mettre à jour le statut d'une transaction
+        function updateTransactionStatus(transactionId, newStatus) {
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            const confirmMessage = document.getElementById('confirmMessage');
+            const confirmAction = document.getElementById('confirmAction');
+
+            confirmMessage.textContent = `Êtes-vous sûr de vouloir marquer cette transaction comme ${getStatusText(newStatus).toLowerCase()} ?`;
+            
+            confirmAction.onclick = () => {
+                const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+                const transactionIndex = transactions.findIndex(t => t.id === transactionId);
+                
+                if (transactionIndex !== -1) {
+                    transactions[transactionIndex].status = newStatus;
+                    transactions[transactionIndex].updatedAt = new Date().toISOString();
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    
+                    // Mettre à jour l'affichage
+                    loadTransactions();
+                    confirmModal.hide();
+                }
+            };
+
+            confirmModal.show();
+        }
+
+        // Fonction pour voir les détails d'une transaction
+        function viewTransactionDetails(id) {
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            const transaction = transactions.find(t => t.id === id);
+            
+            if (transaction) {
+                alert(`
+                    Détails de la transaction:
+                    ID: ${transaction.id}
+                    Date: ${new Date(transaction.date).toLocaleString()}
+                    Expéditeur: ${transaction.sender || 'N/A'}
+                    Destinataire: ${transaction.recipient}
+                    Montant: ${transaction.amount.toLocaleString()} FCFA
+                    Frais: ${(transaction.fees || 0).toLocaleString()} FCFA
+                    Statut: ${getStatusText(transaction.status)}
+                    ${transaction.updatedAt ? `Dernière mise à jour: ${new Date(transaction.updatedAt).toLocaleString()}` : ''}
+                `);
+            }
+        }
+
+        // Gestion des filtres
+        document.getElementById('statusFilter').addEventListener('change', loadTransactions);
+        document.getElementById('dateFilter').addEventListener('change', loadTransactions);
+        document.getElementById('searchFilter').addEventListener('input', loadTransactions);
+
+        // Charger les transactions au chargement de la page
+        loadTransactions();
+    </script>
+</body>
+</html> 

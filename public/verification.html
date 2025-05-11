@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="verificationTitle">Vérification - OWO-SENDER</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    .verification-container {
+      width: 100%;
+      max-width: 400px;
+      padding: 2rem;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .verification-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .verification-header h2 {
+      color: #007bff;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .verification-header p {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
+    .verification-icon {
+      font-size: 3rem;
+      color: #007bff;
+      margin-bottom: 1rem;
+      animation: bounce 2s infinite;
+    }
+
+    .verification-code {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .verification-code input {
+      width: 3rem;
+      height: 3rem;
+      text-align: center;
+      font-size: 1.5rem;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .verification-code input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+
+    .btn-pill {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 2rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-pill:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    .verification-links {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .verification-links a {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .verification-links a:hover {
+      color: #0056b3;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      color: #007bff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      color: #0056b3;
+      transform: translateX(-3px);
+    }
+
+    @media (max-width: 768px) {
+      .verification-container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="connexion.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i>
+    <span data-i18n="back">Retour</span>
+  </a>
+
+  <div class="verification-container">
+    <div class="verification-header">
+      <div class="verification-icon">
+        <i class="fas fa-envelope"></i>
+      </div>
+      <h2 data-i18n="verifyEmail">Vérification de l'email</h2>
+      <p data-i18n="verificationSubtitle">Entrez le code de vérification envoyé à votre adresse email</p>
+    </div>
+
+    <form id="verificationForm">
+      <div class="verification-code">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
+      </div>
+      <div id="verificationError" class="error-message"></div>
+      <div class="d-grid">
+        <button type="submit" class="btn-pill" data-i18n="verifyButton">Vérifier</button>
+      </div>
+      <div class="verification-links">
+        <a href="#" id="resendCode" data-i18n="resendCode">Renvoyer le code</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Toast de succès -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" data-i18n="verificationSuccess">Email vérifié avec succès !</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="lang.js"></script>
+  <script src="dark-mode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // 🌍 Langue
+    const savedLang = localStorage.getItem("lang") || "fr";
+    updateLanguage(savedLang);
+
+    // Vérifier si l'utilisateur a une vérification en attente
+    if (!localStorage.getItem("pendingVerification")) {
+      window.location.href = "connexion.html";
+    }
+
+    // Gestion des inputs de code
+    const inputs = document.querySelectorAll('.verification-code input');
+    inputs.forEach((input, index) => {
+      // Gestion de la saisie
+      input.addEventListener('input', function() {
+        if (this.value.length === 1) {
+          if (index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+        }
+      });
+
+      // Gestion de la touche backspace
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    // 📧 Vérification
+    document.getElementById("verificationForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const code = Array.from(inputs).map(input => input.value).join('');
+      const errorElement = document.getElementById("verificationError");
+
+      // Réinitialiser l'erreur
+      errorElement.textContent = "";
+      errorElement.classList.remove("show");
+
+      // Validation
+      if (code.length !== 6) {
+        errorElement.textContent = "Veuillez entrer le code complet";
+        errorElement.classList.add("show");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/verify-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            email: localStorage.getItem("pendingEmail"),
+            code 
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Code invalide");
+        }
+
+        // Sauvegarder les informations utilisateur
+        localStorage.setItem("userEmail", localStorage.getItem("pendingEmail"));
+        localStorage.setItem("userName", localStorage.getItem("pendingName"));
+        localStorage.setItem("userPhone", localStorage.getItem("pendingPhone"));
+        localStorage.setItem("userCountry", localStorage.getItem("pendingCountry"));
+
+        // Nettoyer les données temporaires
+        localStorage.removeItem("pendingVerification");
+        localStorage.removeItem("pendingEmail");
+        localStorage.removeItem("pendingName");
+        localStorage.removeItem("pendingPhone");
+        localStorage.removeItem("pendingCountry");
+
+        // Afficher le toast de succès
+        const toast = new bootstrap.Toast(document.getElementById("toastSuccess"));
+        toast.show();
+
+        // Rediriger après un court délai
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
+
+      } catch (error) {
+        errorElement.textContent = "Code de vérification invalide";
+        errorElement.classList.add("show");
+      }
+    });
+
+    // 🔄 Renvoi du code
+    document.getElementById("resendCode").addEventListener("click", async function (e) {
+      e.preventDefault();
+
+      try {
+        const response = await fetch("/api/resend-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            email: localStorage.getItem("pendingEmail")
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors du renvoi du code");
+        }
+
+        // Afficher un message de succès
+        const toast = new bootstrap.Toast(document.getElementById("toastSuccess"));
+        toast.querySelector(".toast-body").textContent = "Nouveau code envoyé !";
+        toast.show();
+
+      } catch (error) {
+        const errorElement = document.getElementById("verificationError");
+        errorElement.textContent = "Erreur lors du renvoi du code";
+        errorElement.classList.add("show");
+      }
+    });
+  </script>
+</body>
+</html> 
