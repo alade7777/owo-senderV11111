@@ -340,56 +340,26 @@
       sendForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        // Vérifier que tous les champs requis sont remplis
-        const requiredFields = ['envoyeurNom', 'envoyeurNumero', 'pays', 'montant', 'operateur', 'numero', 'nom'];
-        const missingFields = requiredFields.filter(field => !document.getElementById(field)?.value);
-        
-        if (missingFields.length > 0) {
-          alert("Veuillez remplir tous les champs obligatoires.");
-          return;
-        }
-
-        const token = localStorage.getItem("token");
-        const userEmail = localStorage.getItem("userEmail");
-        const pays = document.getElementById("pays").value;
-        const envoyeurNumero = document.getElementById("envoyeurNumero").value;
-        const numero = document.getElementById("numero").value;
-
-        // Validation du numéro de l'envoyeur (toujours Congo)
-        if (!validatePhoneNumber(envoyeurNumero, 'Congo')) {
-          alert("Le numéro de l'envoyeur doit être un numéro congolais valide (format: +242XXXXXXXXX)");
-          return;
-        }
-
-        // Validation du numéro du destinataire selon le pays
-        if (!validatePhoneNumber(numero, pays)) {
-          alert(`Le numéro du destinataire n'est pas valide pour ${pays}. Format attendu: ${pays === 'Bénin' ? '+229XXXXXXXX' : '+242XXXXXXXXX'}`);
-          return;
-        }
-
         const payload = {
-          pays: pays,
+          pays: document.getElementById("pays").value,
           montant: parseInt(document.getElementById("montant").value),
           total: parseInt(totalInput.dataset.total || 0),
           operateur: document.getElementById("operateur").value,
-          numero: formatPhoneNumber(numero, pays),
+          numero: document.getElementById("numero").value,
           nom: document.getElementById("nom").value,
           message: document.getElementById("message")?.value || "",
           envoyeurNom: document.getElementById("envoyeurNom").value,
-          envoyeurNumero: formatPhoneNumber(envoyeurNumero, 'Congo'), // Toujours Congo pour l'envoyeur
-          userEmail: userEmail
+          envoyeurNumero: document.getElementById("envoyeurNumero").value,
+          userEmail: localStorage.getItem("userEmail")
         };
 
         console.log("Données envoyées:", payload);
 
         try {
-          const API_URL = "https://owo-sender-backend.onrender.com/api/send";
-          const res = await fetch(API_URL, {
+          const res = await fetch("https://owo-sender-backend.onrender.com/api/send", {
             method: "POST",
             headers: { 
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
-              "X-User-Email": userEmail
+              "Content-Type": "application/json"
             },
             body: JSON.stringify(payload),
           });
@@ -405,16 +375,7 @@
             sendForm.reset();
             totalInput.value = "0 FCFA";
           } else {
-            if (res.status === 401) {
-              // Token invalide
-              localStorage.removeItem("token");
-              localStorage.removeItem("userEmail");
-              localStorage.removeItem("userName");
-              alert("Votre session a expiré. Veuillez vous reconnecter.");
-              window.location.href = "connexion.html";
-            } else {
-              alert(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
-            }
+            alert(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
           }
         } catch (error) {
           console.error("Erreur:", error);
