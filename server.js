@@ -11,8 +11,13 @@ const sendRoute = require("./routes/send");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware CORS
-app.use(cors());
+// Configuration CORS
+app.use(cors({
+  origin: ['https://owo-sender.onrender.com', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email'],
+  credentials: true
+}));
 
 // Middleware pour gérer les sessions
 app.use(session({
