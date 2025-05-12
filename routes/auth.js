@@ -17,6 +17,11 @@ async function readUsers() {
   }
 }
 
+// Fonction pour écrire les utilisateurs
+async function writeUsers(users) {
+  await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
+}
+
 // Route de connexion
 router.post('/login', async (req, res) => {
   try {
@@ -70,7 +75,7 @@ router.post('/register', async (req, res) => {
     };
 
     users.push(newUser);
-    await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
+    await writeUsers(users);
 
     const token = jwt.sign(
       { id: newUser.id, email: newUser.email },
