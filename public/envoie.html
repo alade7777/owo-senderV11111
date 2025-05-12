@@ -278,11 +278,16 @@
       
       // Si pas de token ou email, rediriger vers la connexion
       if (!token || !userEmail) {
-        console.log("Redirection vers la page de connexion");
+        console.log("Utilisateur non connecté, redirection vers la page de connexion");
+        // Stocker l'URL de destination pour y revenir après la connexion
+        localStorage.setItem("redirectAfterLogin", "envoie.html");
         window.location.href = "connexion.html";
         return;
       }
 
+      // Si on arrive ici, l'utilisateur est connecté
+      console.log("Utilisateur connecté, chargement du formulaire");
+      
       // Pré-remplir les informations de l'envoyeur
       const userName = localStorage.getItem("userName");
       const userPhone = localStorage.getItem("userPhone");

@@ -422,7 +422,12 @@
 
           // Rediriger après un court délai
           setTimeout(() => {
-            window.location.href = "envoie.html";
+            // Vérifier s'il y a une page de destination stockée
+            const redirectTo = localStorage.getItem("redirectAfterLogin") || "envoie.html";
+            // Supprimer la page de destination stockée
+            localStorage.removeItem("redirectAfterLogin");
+            // Rediriger vers la page appropriée
+            window.location.href = redirectTo;
           }, 1000);
         } else {
           throw new Error(data.message || "Identifiants invalides");
