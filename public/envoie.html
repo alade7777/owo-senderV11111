@@ -359,7 +359,9 @@
           const res = await fetch("https://owo-sender-backend.onrender.com/api/send", {
             method: "POST",
             headers: { 
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+              "X-User-Email": localStorage.getItem("userEmail")
             },
             body: JSON.stringify(payload),
           });
