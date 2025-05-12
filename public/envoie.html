@@ -327,6 +327,35 @@
       }
     });
 
+    // Fonction de validation du numéro de téléphone
+    function validatePhoneNumber(phone, country) {
+      const phoneRegex = {
+        'Bénin': /^(\+229|229)?[0-9]{8}$/,
+        'Congo': /^(\+242|242)?[0-9]{9}$/
+      };
+      
+      // Nettoyer le numéro
+      const cleanPhone = phone.replace(/\s+/g, '');
+      
+      // Vérifier le format selon le pays
+      return phoneRegex[country]?.test(cleanPhone) || false;
+    }
+
+    // Fonction pour formater le numéro de téléphone
+    function formatPhoneNumber(phone, country) {
+      const cleanPhone = phone.replace(/\s+/g, '');
+      if (country === 'Bénin') {
+        return cleanPhone.startsWith('+229') ? cleanPhone : 
+               cleanPhone.startsWith('229') ? `+${cleanPhone}` : 
+               `+229${cleanPhone}`;
+      } else if (country === 'Congo') {
+        return cleanPhone.startsWith('+242') ? cleanPhone : 
+               cleanPhone.startsWith('242') ? `+${cleanPhone}` : 
+               `+242${cleanPhone}`;
+      }
+      return cleanPhone;
+    }
+
     const sendForm = document.getElementById("sendForm");
     if (sendForm) {
       sendForm.addEventListener("submit", async function (e) {
@@ -343,6 +372,20 @@
 
         const token = localStorage.getItem("token");
         const userEmail = localStorage.getItem("userEmail");
+        const pays = document.getElementById("pays").value;
+        const envoyeurNumero = document.getElementById("envoyeurNumero").value;
+        const numero = document.getElementById("numero").value;
+
+        // Validation des numéros de téléphone
+        if (!validatePhoneNumber(envoyeurNumero, pays)) {
+          alert(`Le numéro de l'envoyeur n'est pas valide pour ${pays}. Format attendu: ${pays === 'Bénin' ? '+229XXXXXXXX' : '+242XXXXXXXXX'}`);
+          return;
+        }
+
+        if (!validatePhoneNumber(numero, pays)) {
+          alert(`Le numéro du destinataire n'est pas valide pour ${pays}. Format attendu: ${pays === 'Bénin' ? '+229XXXXXXXX' : '+242XXXXXXXXX'}`);
+          return;
+        }
 
         console.log("Token présent:", !!token);
         console.log("Email utilisateur:", userEmail);
@@ -354,22 +397,23 @@
         }
 
         const payload = {
-          pays: document.getElementById("pays").value,
+          pays: pays,
           montant: parseInt(document.getElementById("montant").value),
           total: parseInt(totalInput.dataset.total || 0),
           operateur: document.getElementById("operateur").value,
-          numero: document.getElementById("numero").value,
+          numero: formatPhoneNumber(numero, pays),
           nom: document.getElementById("nom").value,
           message: document.getElementById("message")?.value || "",
           envoyeurNom: document.getElementById("envoyeurNom").value,
-          envoyeurNumero: document.getElementById("envoyeurNumero").value,
+          envoyeurNumero: formatPhoneNumber(envoyeurNumero, pays),
           userEmail: userEmail
         };
 
         console.log("Données envoyées:", payload);
 
         try {
-          const res = await fetch("https://owo-sender-backend.onrender.com/api/send", {
+          const API_URL = "https://owo-sender-backend.onrender.com/api/send";
+          const res = await fetch(API_URL, {
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
@@ -395,15 +439,23 @@
               localStorage.removeItem("token");
               localStorage.removeItem("userEmail");
               localStorage.removeItem("userName");
-              alert("Veuillez vous reconnecter.");
+              alert("Votre session a expiré. Veuillez vous reconnecter.");
               window.location.href = "connexion.html";
+            } else if (res.status === 400) {
+              alert(data.message || "Données invalides. Veuillez vérifier les informations saisies.");
+            } else if (res.status === 503) {
+              alert("Le service est temporairement indisponible. Veuillez réessayer plus tard.");
             } else {
               alert(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
             }
           }
         } catch (error) {
           console.error("Erreur:", error);
-          alert("Erreur de connexion. Veuillez vérifier votre connexion internet et réessayer.");
+          if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            alert("Impossible de se connecter au serveur. Veuillez vérifier votre connexion internet et réessayer.");
+          } else {
+            alert("Une erreur inattendue s'est produite. Veuillez réessayer plus tard.");
+          }
         }
       });
     }
