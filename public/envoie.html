@@ -191,15 +191,6 @@
     <h2 class="mb-4 text-center" data-i18n="formTitle">Transfert Mobile Money</h2>
     <form id="sendForm">
       <div class="mb-3">
-        <label for="pays" class="form-label" data-i18n="countryLabel">Pays de destination</label>
-        <select id="pays" class="form-select" required>
-          <option value="" data-i18n="selectCountry">Sélectionner un pays</option>
-          <option value="Bénin" data-i18n="benin">🇧🇯 Bénin</option>
-          <option value="Congo" data-i18n="congo">🇨🇬 Congo</option>
-        </select>
-      </div>
-
-      <div class="mb-3">
         <label for="envoyeurNom" class="form-label" data-i18n="senderNameLabel">Nom de l'envoyeur</label>
         <input type="text" id="envoyeurNom" class="form-control" data-i18n-placeholder="senderNamePlaceholder" required />
       </div>
@@ -207,6 +198,15 @@
       <div class="mb-3">
         <label for="envoyeurNumero" class="form-label" data-i18n="senderPhoneLabel">Numéro de l'envoyeur</label>
         <input type="tel" id="envoyeurNumero" class="form-control" data-i18n-placeholder="senderPhonePlaceholder" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="pays" class="form-label" data-i18n="countryLabel">Pays de destination</label>
+        <select id="pays" class="form-select" required>
+          <option value="" data-i18n="selectCountry">Sélectionner un pays</option>
+          <option value="Bénin" data-i18n="benin">🇧🇯 Bénin</option>
+          <option value="Congo" data-i18n="congo">🇨🇬 Congo</option>
+        </select>
       </div>
 
       <div class="mb-3">
@@ -238,6 +238,11 @@
       <div class="mb-3">
         <label for="nom" class="form-label" data-i18n="nameLabel">Nom du destinataire</label>
         <input type="text" id="nom" class="form-control" data-i18n-placeholder="namePlaceholder" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="message" class="form-label" data-i18n="messageLabel">Message (optionnel)</label>
+        <textarea id="message" class="form-control" data-i18n-placeholder="messagePlaceholder" rows="3"></textarea>
       </div>
 
       <div class="d-grid">
@@ -316,6 +321,15 @@
       sendForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
+        // Vérifier que tous les champs requis sont remplis
+        const requiredFields = ['envoyeurNom', 'envoyeurNumero', 'pays', 'montant', 'operateur', 'numero', 'nom'];
+        const missingFields = requiredFields.filter(field => !document.getElementById(field)?.value);
+        
+        if (missingFields.length > 0) {
+          alert("Veuillez remplir tous les champs obligatoires.");
+          return;
+        }
+
         const payload = {
           pays: document.getElementById("pays").value,
           montant: parseInt(document.getElementById("montant").value),
@@ -323,7 +337,7 @@
           operateur: document.getElementById("operateur").value,
           numero: document.getElementById("numero").value,
           nom: document.getElementById("nom").value,
-          message: document.getElementById("message").value,
+          message: document.getElementById("message")?.value || "",
           envoyeurNom: document.getElementById("envoyeurNom").value,
           envoyeurNumero: document.getElementById("envoyeurNumero").value
         };
@@ -331,9 +345,19 @@
         console.log("Données envoyées:", payload); // Pour déboguer
 
         try {
-          const res = await fetch("/api/send", {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            alert("Session expirée. Veuillez vous reconnecter.");
+            window.location.href = "connexion.html";
+            return;
+          }
+
+          const res = await fetch("https://owo-sender-backend.onrender.com/api/send", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
             body: JSON.stringify(payload),
           });
 
@@ -351,7 +375,7 @@
           }
         } catch (error) {
           console.error("Erreur:", error); // Pour déboguer
-          alert("Erreur réseau.");
+          alert("Erreur réseau. Veuillez réessayer.");
         }
       });
     }
