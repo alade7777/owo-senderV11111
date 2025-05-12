@@ -1,118 +1,89 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs').promises;
 const path = require('path');
-const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
-// Chemins vers les fichiers JSON
-const transfertsFilePath = path.join(__dirname, '..', 'transferts.json');
-const usersFilePath = path.join(__dirname, '..', 'users.json');
+// Chemin vers le fichier de stockage
+const dataFile = path.join(__dirname, '..', 'data', 'requests.json');
 
-// Middleware d'authentification
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  const userEmail = req.headers['x-user-email'];
-
-  if (!token || !userEmail) {
-    return res.status(401).json({ message: 'Token ou email manquant' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "votre_secret_jwt");
-    if (decoded.email !== userEmail) {
-      return res.status(403).json({ message: 'Token invalide pour cet utilisateur' });
+// Fonctions utilitaires
+function readData() {
+    if (!fs.existsSync(dataFile)) {
+        return [];
     }
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Token invalide' });
-  }
-};
-
-// Fonction pour lire les transferts
-async function readTransferts() {
-  try {
-    const data = await fs.readFile(transfertsFilePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
+    return JSON.parse(fs.readFileSync(dataFile, 'utf8'));
 }
 
-// Fonction pour écrire les transferts
-async function writeTransferts(transferts) {
-  await fs.writeFile(transfertsFilePath, JSON.stringify(transferts, null, 2));
+function writeData(data) {
+    fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
 }
 
-// Route pour créer un nouveau transfert
-router.post('/', authenticateToken, async (req, res) => {
-  try {
-    const {
-      pays,
-      montant,
-      total,
-      operateur,
-      numero,
-      nom,
-      message,
-      envoyeurNom,
-      envoyeurNumero,
-      userEmail
-    } = req.body;
-
-    // Validation des données
-    if (!pays || !montant || !operateur || !numero || !nom || !envoyeurNom || !envoyeurNumero) {
-      return res.status(400).json({ message: 'Tous les champs obligatoires doivent être remplis' });
+// Créer une nouvelle demande
+router.post('/', (req, res) => {
+    try {
+        const requests = readData();
+        const newRequest = {
+            id: Date.now().toString(),
+            ...req.body,
+            status: 'en_attente',
+            createdAt: new Date().toISOString()
+        };
+        
+        requests.push(newRequest);
+        writeData(requests);
+        
+        res.status(201).json({ message: 'Demande enregistrée avec succès', request: newRequest });
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ message: 'Erreur lors de l\'enregistrement' });
     }
-
-    // Validation du montant
-    if (montant <= 0) {
-      return res.status(400).json({ message: 'Le montant doit être supérieur à 0' });
-    }
-
-    // Création du nouveau transfert
-    const transfert = {
-      id: Date.now().toString(),
-      pays,
-      montant,
-      total,
-      operateur,
-      numero,
-      nom,
-      message: message || '',
-      envoyeurNom,
-      envoyeurNumero,
-      userEmail,
-      date: new Date().toISOString(),
-      statut: 'en_attente'
-    };
-
-    // Lecture et mise à jour des transferts
-    const transferts = await readTransferts();
-    transferts.push(transfert);
-    await writeTransferts(transferts);
-
-    res.status(201).json({
-      message: 'Transfert enregistré avec succès',
-      transfert
-    });
-  } catch (error) {
-    console.error('Erreur lors de la création du transfert:', error);
-    res.status(500).json({ message: 'Erreur lors de la création du transfert' });
-  }
 });
 
-// Route pour obtenir l'historique des transferts d'un utilisateur
-router.get('/history', authenticateToken, async (req, res) => {
-  try {
-    const transferts = await readTransferts();
-    const userTransferts = transferts.filter(t => t.userEmail === req.user.email);
-    res.json(userTransferts);
-  } catch (error) {
-    console.error('Erreur lors de la récupération de l\'historique:', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération de l\'historique' });
-  }
+// Obtenir toutes les demandes (pour l'admin)
+router.get('/all', (req, res) => {
+    try {
+        const requests = readData();
+        res.json(requests);
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ message: 'Erreur lors de la lecture' });
+    }
+});
+
+// Obtenir les demandes d'un utilisateur
+router.get('/user/:email', (req, res) => {
+    try {
+        const requests = readData();
+        const userRequests = requests.filter(r => r.clientEmail === req.params.email);
+        res.json(userRequests);
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ message: 'Erreur lors de la lecture' });
+    }
+});
+
+// Mettre à jour le statut
+router.patch('/:id', (req, res) => {
+    try {
+        const requests = readData();
+        const index = requests.findIndex(r => r.id === req.params.id);
+        
+        if (index === -1) {
+            return res.status(404).json({ message: 'Demande non trouvée' });
+        }
+        
+        requests[index] = {
+            ...requests[index],
+            ...req.body,
+            updatedAt: new Date().toISOString()
+        };
+        
+        writeData(requests);
+        res.json({ message: 'Statut mis à jour', request: requests[index] });
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ message: 'Erreur lors de la mise à jour' });
+    }
 });
 
 module.exports = router; 
