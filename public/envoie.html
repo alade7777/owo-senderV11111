@@ -280,12 +280,12 @@
         console.log("Redirection vers la page de connexion");
         window.location.replace("connexion.html");
         return;
-      }
+    }
 
-      // Pré-remplir les informations de l'envoyeur
-      const userName = localStorage.getItem("userName");
-      const userPhone = localStorage.getItem("userPhone");
-      const userCountry = localStorage.getItem("userCountry");
+    // Pré-remplir les informations de l'envoyeur
+    const userName = localStorage.getItem("userName");
+    const userPhone = localStorage.getItem("userPhone");
+    const userCountry = localStorage.getItem("userCountry");
 
       const envoyeurNomInput = document.getElementById("envoyeurNom");
       const envoyeurNumeroInput = document.getElementById("envoyeurNumero");
@@ -293,17 +293,17 @@
 
       if (envoyeurNomInput && userName) {
         envoyeurNomInput.value = userName;
-      }
+    }
       
       if (envoyeurNumeroInput) {
-        if (userPhone) {
+    if (userPhone) {
           envoyeurNumeroInput.value = userPhone;
-        } else {
-          // Si pas de numéro dans le profil, essayer de le construire avec le pays
-          const country = userCountry || "Bénin";
-          const prefix = country === "Bénin" ? "+229" : "+242";
+    } else {
+      // Si pas de numéro dans le profil, essayer de le construire avec le pays
+      const country = userCountry || "Bénin";
+      const prefix = country === "Bénin" ? "+229" : "+242";
           envoyeurNumeroInput.value = prefix;
-        }
+    }
       }
       
       if (paysSelect && userCountry) {
