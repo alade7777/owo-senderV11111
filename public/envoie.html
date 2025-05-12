@@ -330,6 +330,18 @@
           return;
         }
 
+        const token = localStorage.getItem("token");
+        const userEmail = localStorage.getItem("userEmail");
+
+        console.log("Token présent:", !!token);
+        console.log("Email utilisateur:", userEmail);
+
+        if (!token || !userEmail) {
+          alert("Session expirée. Veuillez vous reconnecter.");
+          window.location.href = "connexion.html";
+          return;
+        }
+
         const payload = {
           pays: document.getElementById("pays").value,
           montant: parseInt(document.getElementById("montant").value),
@@ -339,29 +351,25 @@
           nom: document.getElementById("nom").value,
           message: document.getElementById("message")?.value || "",
           envoyeurNom: document.getElementById("envoyeurNom").value,
-          envoyeurNumero: document.getElementById("envoyeurNumero").value
+          envoyeurNumero: document.getElementById("envoyeurNumero").value,
+          userEmail: userEmail
         };
 
-        console.log("Données envoyées:", payload); // Pour déboguer
+        console.log("Données envoyées:", payload);
 
         try {
-          const token = localStorage.getItem("token");
-          if (!token) {
-            alert("Session expirée. Veuillez vous reconnecter.");
-            window.location.href = "connexion.html";
-            return;
-          }
-
           const res = await fetch("https://owo-sender-backend.onrender.com/api/send", {
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+              "Authorization": `Bearer ${token}`,
+              "X-User-Email": userEmail
             },
             body: JSON.stringify(payload),
           });
 
           const data = await res.json();
+          console.log("Réponse du serveur:", data);
 
           if (res.ok) {
             const toast = document.getElementById("toastSuccess");
@@ -371,10 +379,19 @@
             sendForm.reset();
             totalInput.value = "0 FCFA";
           } else {
-            alert(data.message || "Erreur lors de l'envoi.");
+            if (res.status === 401) {
+              // Token invalide ou expiré
+              localStorage.removeItem("token");
+              localStorage.removeItem("userEmail");
+              localStorage.removeItem("userName");
+              alert("Session expirée. Veuillez vous reconnecter.");
+              window.location.href = "connexion.html";
+            } else {
+              alert(data.message || "Erreur lors de l'envoi.");
+            }
           }
         } catch (error) {
-          console.error("Erreur:", error); // Pour déboguer
+          console.error("Erreur:", error);
           alert("Erreur réseau. Veuillez réessayer.");
         }
       });

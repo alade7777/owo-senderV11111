@@ -2,12 +2,35 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 
 const filePath = path.join(__dirname, "..", "transferts.json");
 
+// Middleware pour vérifier le token JWT
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  const userEmail = req.headers["x-user-email"];
+
+  if (!token || !userEmail) {
+    return res.status(401).json({ message: "Non autorisé. Token ou email manquant." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.email !== userEmail) {
+      return res.status(401).json({ message: "Token invalide." });
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Token invalide ou expiré." });
+  }
+};
+
 // 📤 POST /api/send - Enregistrer un transfert
-router.post("/", (req, res) => {
+router.post("/", verifyToken, (req, res) => {
   const { pays, montant, total, operateur, numero, nom, message, envoyeurNom, envoyeurNumero } = req.body;
+  const userEmail = req.user.email;
 
   console.log("Données reçues:", req.body);
 
@@ -33,6 +56,7 @@ router.post("/", (req, res) => {
     envoyeurNumero: envoyeurNumero || "",
     statut: "En attente",
     date: new Date().toISOString(),
+    userEmail
   };
 
   console.log("Nouveau transfert à enregistrer:", nouveauTransfert);
@@ -62,7 +86,10 @@ router.post("/", (req, res) => {
 });
 
 // 📥 GET /api/send/all - Liste des transferts
-router.get("/all", (req, res) => {
+router.get("/all", verifyToken, (req, res) => {
+  const userEmail = req.user.email;
+  const isAdmin = userEmail === "igell7777@gmail.com"; // Vérifie si c'est l'admin
+
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
       console.error("Erreur lecture transferts.json:", err);
@@ -70,7 +97,11 @@ router.get("/all", (req, res) => {
     }
 
     try {
-      const transferts = JSON.parse(data);
+      let transferts = JSON.parse(data);
+      // Si ce n'est pas l'admin, ne montrer que ses transferts
+      if (!isAdmin) {
+        transferts = transferts.filter(t => t.userEmail === userEmail);
+      }
       res.json(transferts);
     } catch (parseErr) {
       console.error("Erreur de parsing JSON:", parseErr);
