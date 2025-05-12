@@ -402,21 +402,26 @@
         if (response.ok && data.token) {
           // Stocker les informations de connexion
           localStorage.setItem("token", data.token);
-        localStorage.setItem("userEmail", email);
-        localStorage.setItem("userName", data.name || email.split('@')[0]);
-        localStorage.setItem("userPhone", data.phone || "");
-          localStorage.setItem("userCountry", data.country || "Bénin");
+          localStorage.setItem("userEmail", data.user.email);
+          localStorage.setItem("userName", data.user.name || email.split('@')[0]);
+          localStorage.setItem("userPhone", data.user.phone || "");
+          localStorage.setItem("userCountry", data.user.country || "Congo");
           
           // Vérifier que les données sont bien stockées
-          console.log("Token stocké:", !!localStorage.getItem("token"));
-          console.log("Email stocké:", localStorage.getItem("userEmail"));
+          console.log("Données stockées:", {
+            token: !!localStorage.getItem("token"),
+            email: localStorage.getItem("userEmail"),
+            name: localStorage.getItem("userName"),
+            phone: localStorage.getItem("userPhone"),
+            country: localStorage.getItem("userCountry")
+          });
 
-        // Afficher le toast de succès
-        const toast = new bootstrap.Toast(document.getElementById("toastSuccess"));
-        toast.show();
+          // Afficher le toast de succès
+          const toast = new bootstrap.Toast(document.getElementById("toastSuccess"));
+          toast.show();
 
-        // Rediriger après un court délai
-        setTimeout(() => {
+          // Rediriger après un court délai
+          setTimeout(() => {
             window.location.href = "envoie.html";
           }, 1000);
         } else {
@@ -428,40 +433,6 @@
         passwordError.classList.add("show");
       }
     });
-
-    // Fonction de connexion
-    function login(event) {
-      event.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      // Vérification simple (à remplacer par une vraie authentification)
-      if (email && password) {
-        // Sauvegarder l'email
-        localStorage.setItem("userEmail", email);
-
-        // Restaurer les données du profil si elles existent
-        const profileData = JSON.parse(localStorage.getItem("userProfileData") || "{}");
-        if (profileData.email === email) {
-          // Restaurer toutes les données du profil
-          localStorage.setItem("userName", profileData.name);
-          localStorage.setItem("userPhone", profileData.phone);
-          localStorage.setItem("userCountry", profileData.country);
-          localStorage.setItem("userCity", profileData.city);
-          localStorage.setItem("userJoinDate", profileData.joinDate);
-        } else {
-          // Si c'est une nouvelle connexion, initialiser avec l'email
-          localStorage.setItem("userName", email.split("@")[0]);
-          localStorage.setItem("userCountry", "Bénin");
-          localStorage.setItem("userJoinDate", new Date().toLocaleDateString());
-        }
-
-        // Rediriger vers la page d'accueil
-        window.location.href = "index.html";
-      } else {
-        alert("Veuillez remplir tous les champs");
-      }
-    }
   </script>
 </body>
 </html>
