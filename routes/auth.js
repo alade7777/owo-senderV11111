@@ -7,6 +7,28 @@ const path = require('path');
 // Chemin vers le fichier users.json
 const usersFilePath = path.join(__dirname, '..', 'users.json');
 
+// Middleware d'authentification
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  const userEmail = req.headers['x-user-email'];
+
+  if (!token || !userEmail) {
+    return res.status(401).json({ message: 'Token ou email manquant' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET || "votre_secret_jwt", (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Token invalide ou expiré' });
+    }
+    if (user.email !== userEmail) {
+      return res.status(403).json({ message: 'Email ne correspond pas au token' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
 // Fonction pour lire les utilisateurs
 async function readUsers() {
   try {
@@ -22,6 +44,11 @@ async function writeUsers(users) {
   await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
 }
 
+// Route de vérification du token
+router.get('/verify', authenticateToken, (req, res) => {
+  res.json({ message: 'Token valide', user: req.user });
+});
+
 // Route de connexion
 router.post('/login', async (req, res) => {
   try {
@@ -35,8 +62,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET || "votre_secret_jwt",
-      { expiresIn: '24h' }
+      process.env.JWT_SECRET || "votre_secret_jwt"
     );
 
     res.json({
@@ -79,8 +105,7 @@ router.post('/register', async (req, res) => {
 
     const token = jwt.sign(
       { id: newUser.id, email: newUser.email },
-      process.env.JWT_SECRET || "votre_secret_jwt",
-      { expiresIn: '24h' }
+      process.env.JWT_SECRET || "votre_secret_jwt"
     );
 
     res.status(201).json({
