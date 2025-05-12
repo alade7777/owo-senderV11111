@@ -276,9 +276,10 @@
       console.log("Token présent:", !!token);
       console.log("Email présent:", !!userEmail);
       
+      // Si pas de token ou email, rediriger vers la connexion
       if (!token || !userEmail) {
         console.log("Redirection vers la page de connexion");
-        window.location.replace("connexion.html");
+        window.location.href = "connexion.html";
         return;
       }
 
@@ -299,10 +300,8 @@
         if (userPhone) {
           envoyeurNumeroInput.value = userPhone;
         } else {
-          // Si pas de numéro dans le profil, essayer de le construire avec le pays
-          const country = userCountry || "Bénin";
-          const prefix = country === "Bénin" ? "+229" : "+242";
-          envoyeurNumeroInput.value = prefix;
+          // Le numéro de l'envoyeur est toujours Congo
+          envoyeurNumeroInput.value = "+242";
         }
       }
       
@@ -376,23 +375,15 @@
         const envoyeurNumero = document.getElementById("envoyeurNumero").value;
         const numero = document.getElementById("numero").value;
 
-        // Validation des numéros de téléphone
-        if (!validatePhoneNumber(envoyeurNumero, pays)) {
-          alert(`Le numéro de l'envoyeur n'est pas valide pour ${pays}. Format attendu: ${pays === 'Bénin' ? '+229XXXXXXXX' : '+242XXXXXXXXX'}`);
+        // Validation du numéro de l'envoyeur (toujours Congo)
+        if (!validatePhoneNumber(envoyeurNumero, 'Congo')) {
+          alert("Le numéro de l'envoyeur doit être un numéro congolais valide (format: +242XXXXXXXXX)");
           return;
         }
 
+        // Validation du numéro du destinataire selon le pays
         if (!validatePhoneNumber(numero, pays)) {
           alert(`Le numéro du destinataire n'est pas valide pour ${pays}. Format attendu: ${pays === 'Bénin' ? '+229XXXXXXXX' : '+242XXXXXXXXX'}`);
-          return;
-        }
-
-        console.log("Token présent:", !!token);
-        console.log("Email utilisateur:", userEmail);
-
-        if (!token || !userEmail) {
-          alert("Veuillez vous connecter pour envoyer un transfert.");
-          window.location.href = "connexion.html";
           return;
         }
 
@@ -405,7 +396,7 @@
           nom: document.getElementById("nom").value,
           message: document.getElementById("message")?.value || "",
           envoyeurNom: document.getElementById("envoyeurNom").value,
-          envoyeurNumero: formatPhoneNumber(envoyeurNumero, pays),
+          envoyeurNumero: formatPhoneNumber(envoyeurNumero, 'Congo'), // Toujours Congo pour l'envoyeur
           userEmail: userEmail
         };
 
