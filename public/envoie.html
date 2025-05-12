@@ -337,7 +337,7 @@
         console.log("Email utilisateur:", userEmail);
 
         if (!token || !userEmail) {
-          alert("Session expirée. Veuillez vous reconnecter.");
+          alert("Veuillez vous connecter pour envoyer un transfert.");
           window.location.href = "connexion.html";
           return;
         }
@@ -374,25 +374,25 @@
           if (res.ok) {
             const toast = document.getElementById("toastSuccess");
             const bsToast = new bootstrap.Toast(toast);
-            toast.querySelector(".toast-body").textContent = data.message || "Transfert enregistré.";
+            toast.querySelector(".toast-body").textContent = data.message || "Transfert enregistré avec succès.";
             bsToast.show();
             sendForm.reset();
             totalInput.value = "0 FCFA";
           } else {
             if (res.status === 401) {
-              // Token invalide ou expiré
+              // Token invalide
               localStorage.removeItem("token");
               localStorage.removeItem("userEmail");
               localStorage.removeItem("userName");
-              alert("Session expirée. Veuillez vous reconnecter.");
+              alert("Veuillez vous reconnecter.");
               window.location.href = "connexion.html";
             } else {
-              alert(data.message || "Erreur lors de l'envoi.");
+              alert(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
             }
           }
         } catch (error) {
           console.error("Erreur:", error);
-          alert("Erreur réseau. Veuillez réessayer.");
+          alert("Erreur de connexion. Veuillez vérifier votre connexion internet et réessayer.");
         }
       });
     }
