@@ -9,23 +9,48 @@ const authRoutes = require("./routes/auth");
 const sendRoute = require("./routes/send");
 
 const app = express();
+// Utiliser le port de Render (10000) ou le port local (3000)
 const PORT = process.env.PORT || 3000;
 
 // Configuration CORS - doit être avant les autres middlewares
-app.use(cors({
-  origin: true, // Autoriser toutes les origines en développement
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://owo-sender.onrender.com',
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'https://owo-sender-frontend.onrender.com'
+    ];
+    // En développement, accepter toutes les origines
+    if (process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+      return;
+    }
+    // En production, vérifier les origines autorisées
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   credentials: true,
   maxAge: 86400 // 24 heures
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Middleware pour gérer les sessions
 app.use(session({
   secret: process.env.SESSION_SECRET || "ma-cle-secrete",
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none'
+  }
 }));
 
 // Middlewares pour le parsing
@@ -58,6 +83,7 @@ app.use((err, req, res, next) => {
 // Lancement du serveur
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Serveur démarré sur le port ${PORT}`);
+  console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
 });
 
 // Mail (si utilisé ailleurs)
