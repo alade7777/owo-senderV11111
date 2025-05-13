@@ -16,10 +16,13 @@ const PORT = process.env.PORT || 3000;
 app.use((req, res, next) => {
   const isProduction = process.env.NODE_ENV === 'production';
   console.log('Environnement:', process.env.NODE_ENV || 'development');
+  console.log('Méthode:', req.method);
+  console.log('URL:', req.url);
+  console.log('Headers:', req.headers);
   
   const allowedOrigins = isProduction 
     ? [
-        'https://owo-sender.onrender.com',
+        process.env.CORS_ORIGIN || 'https://owo-sender.onrender.com',
         'https://owo-sender-frontend.onrender.com'
       ]
     : [
@@ -37,30 +40,32 @@ app.use((req, res, next) => {
     return;
   }
   
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    console.log('Origin autorisé:', origin);
-  } else {
-    console.log('Origin non autorisé:', origin);
-    if (isProduction) {
-      // En production, on rejette les origines non autorisées
-      return res.status(403).json({ 
-        error: 'Origin non autorisé',
-        message: 'Cette origine n\'est pas autorisée à accéder à cette API'
-      });
+  // Toujours définir les headers CORS pour les requêtes API
+  if (req.path.startsWith('/api/')) {
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      console.log('Origin autorisé pour API:', origin);
+    } else {
+      console.log('Origin non autorisé pour API:', origin);
+      if (isProduction) {
+        return res.status(403).json({ 
+          error: 'Origin non autorisé',
+          message: 'Cette origine n\'est pas autorisée à accéder à cette API'
+        });
+      }
     }
-  }
-  
-  // Headers spécifiques pour Render
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '86400');
-  
-  // Gérer les requêtes OPTIONS
-  if (req.method === 'OPTIONS') {
-    console.log('Requête OPTIONS reçue, envoi de la réponse 204');
-    return res.status(204).end();
+    
+    // Headers spécifiques pour les requêtes API
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Max-Age', '86400');
+    
+    // Gérer les requêtes OPTIONS
+    if (req.method === 'OPTIONS') {
+      console.log('Requête OPTIONS reçue pour API, envoi de la réponse 204');
+      return res.status(204).end();
+    }
   }
   
   next();
