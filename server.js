@@ -14,18 +14,37 @@ const PORT = process.env.PORT || 3000;
 
 // Configuration des en-têtes CORS
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'https://owo-sender.onrender.com',
-    'http://localhost:3000',
-    'http://localhost:5000',
-    'https://owo-sender-frontend.onrender.com'
-  ];
+  const isProduction = process.env.NODE_ENV === 'production';
+  console.log('Environnement:', process.env.NODE_ENV || 'development');
+  
+  const allowedOrigins = isProduction 
+    ? [
+        'https://owo-sender.onrender.com',
+        'https://owo-sender-frontend.onrender.com'
+      ]
+    : [
+        'http://localhost:3000',
+        'http://localhost:5000'
+      ];
   
   const origin = req.headers.origin;
+  console.log('Origin de la requête:', origin);
+  
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+    console.log('Origin autorisé:', origin);
+  } else {
+    console.log('Origin non autorisé:', origin);
+    if (isProduction) {
+      // En production, on rejette les origines non autorisées
+      return res.status(403).json({ 
+        error: 'Origin non autorisé',
+        message: 'Cette origine n\'est pas autorisée à accéder à cette API'
+      });
+    }
   }
   
+  // Headers spécifiques pour Render
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -33,6 +52,7 @@ app.use((req, res, next) => {
   
   // Gérer les requêtes OPTIONS
   if (req.method === 'OPTIONS') {
+    console.log('Requête OPTIONS reçue, envoi de la réponse 204');
     return res.status(204).end();
   }
   
