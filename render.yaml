@@ -38,7 +38,7 @@ services:
         value: "true"
 
   - type: static
-    name: owo-sender-frontend
+    name: owo-sender
     buildCommand: npm install
     staticPublishPath: ./public
     envVars:

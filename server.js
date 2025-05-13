@@ -82,7 +82,7 @@ app.use((err, req, res, next) => {
 });
 
 // Connexion à MongoDB
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ALADE:2002@cluster0.jjfxgas.mongodb.net/owo-sender?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ALADE:ALADE7777@cluster0.jjfxgas.mongodb.net/owo-sender?retryWrites=true&w=majority&appName=Cluster0';
 
 console.log('Tentative de connexion à MongoDB...');
 console.log('URI:', MONGODB_URI.replace(/:[^:@]+@/, ':****@')); // Masquer le mot de passe dans les logs
