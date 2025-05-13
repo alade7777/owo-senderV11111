@@ -12,64 +12,31 @@ const app = express();
 // Utiliser le port de Render (10000) ou le port local (3000)
 const PORT = process.env.PORT || 3000;
 
-// Configuration des en-têtes CORS
-app.use((req, res, next) => {
-  const isProduction = process.env.NODE_ENV === 'production';
-  console.log('Environnement:', process.env.NODE_ENV || 'development');
-  console.log('Méthode:', req.method);
-  console.log('URL:', req.url);
-  console.log('Headers:', req.headers);
-  
-  const allowedOrigins = isProduction 
-    ? [
-        process.env.CORS_ORIGIN || 'https://owo-sender.onrender.com',
-        'https://owo-sender-frontend.onrender.com'
-      ]
-    : [
-        'http://localhost:3000',
-        'http://localhost:5000'
-      ];
-  
-  const origin = req.headers.origin;
-  console.log('Origin de la requête:', origin);
-  
-  // Si l'origine est undefined (requête directe) ou si c'est une requête statique
-  if (!origin || req.path.startsWith('/public/') || req.path.endsWith('.html')) {
-    console.log('Requête directe ou statique détectée');
-    next();
-    return;
-  }
-  
-  // Toujours définir les headers CORS pour les requêtes API
-  if (req.path.startsWith('/api/')) {
-    if (allowedOrigins.includes(origin)) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      console.log('Origin autorisé pour API:', origin);
+// Configuration CORS
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://owo-sender.onrender.com',
+      'https://owo-sender-frontend.onrender.com',
+      'http://localhost:3000',
+      'http://localhost:5000'
+    ];
+    
+    // Autoriser les requêtes sans origine (comme les requêtes mobiles ou curl)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
     } else {
-      console.log('Origin non autorisé pour API:', origin);
-      if (isProduction) {
-        return res.status(403).json({ 
-          error: 'Origin non autorisé',
-          message: 'Cette origine n\'est pas autorisée à accéder à cette API'
-        });
-      }
+      console.log('Origin non autorisé:', origin);
+      callback(new Error('Not allowed by CORS'));
     }
-    
-    // Headers spécifiques pour les requêtes API
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Max-Age', '86400');
-    
-    // Gérer les requêtes OPTIONS
-    if (req.method === 'OPTIONS') {
-      console.log('Requête OPTIONS reçue pour API, envoi de la réponse 204');
-      return res.status(204).end();
-    }
-  }
-  
-  next();
-});
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With'],
+  maxAge: 86400
+};
+
+app.use(cors(corsOptions));
 
 // Middleware pour gérer les sessions
 app.use(session({
