@@ -7,7 +7,6 @@ const cors = require("cors");
 // Import des routes
 const authRoutes = require("./routes/auth");
 const sendRoute = require("./routes/send");
-const translationsRoute = require("./routes/translations");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,7 +38,6 @@ app.use(express.static(path.join(__dirname, "public")));
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/send", sendRoute);
-app.use("/api/translations", translationsRoute);
 
 // Route d'accueil
 app.get("/", (req, res) => {
