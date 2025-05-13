@@ -71,12 +71,13 @@ app.get("/", (req, res) => {
 
 // Gestion des erreurs 404
 app.use((req, res) => {
+  console.log("Route non trouvée:", req.method, req.url);
   res.status(404).json({ message: "Route non trouvée" });
 });
 
 // Gestion des erreurs globales
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Erreur serveur:", err);
   res.status(500).json({ message: "Une erreur est survenue sur le serveur" });
 });
 

@@ -75,7 +75,7 @@ router.get('/all', (req, res) => {
     } catch (error) {
         console.error('Erreur:', error);
         res.status(500).json({ 
-            message: 'Une erreur est survenue. Veuillez réessayer.' 
+            message: 'Une erreur est survenue lors de la récupération des transferts.' 
         });
     }
 });
