@@ -12,13 +12,39 @@ const app = express();
 // Utiliser le port de Render (10000) ou le port local (3000)
 const PORT = process.env.PORT || 3000;
 
-// Configuration CORS simple
-app.use(cors({
+// Configuration CORS
+const corsOptions = {
   origin: 'https://owo-sender.onrender.com',
-  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+// Middleware de logging pour les requêtes
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  next();
+});
+
+// Middleware CORS personnalisé
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://owo-sender.onrender.com');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    console.log('Requête OPTIONS reçue, envoi des en-têtes CORS');
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// Middleware CORS d'Express
+app.use(cors(corsOptions));
 
 // Middleware pour gérer les sessions
 app.use(session({

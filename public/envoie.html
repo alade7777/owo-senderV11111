@@ -404,6 +404,12 @@
             body: JSON.stringify(payload)
           });
 
+          console.log("Réponse reçue:", {
+            status: res.status,
+            statusText: res.statusText,
+            headers: Object.fromEntries(res.headers.entries())
+          });
+
           if (!res.ok) {
             const errorData = await res.json().catch(() => ({ message: 'Erreur serveur' }));
             console.error('Erreur serveur:', errorData);
@@ -452,6 +458,47 @@
           bsToast.show();
         }
       });
+    }
+
+    async function sendData(data) {
+      try {
+        console.log('Envoi des données:', data);
+        console.log('URL de l\'API:', API_URL);
+        
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            "X-User-Email": localStorage.getItem("userEmail"),
+            "Accept": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify(data)
+        });
+
+        console.log('Réponse reçue:', {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries())
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: 'Erreur serveur' }));
+          console.error('Erreur serveur:', errorData);
+          throw new Error(errorData.message || `Erreur HTTP: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Données reçues:', result);
+        return result;
+      } catch (error) {
+        console.error('Erreur complète:', error);
+        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+          throw new Error('Impossible de se connecter au serveur. Veuillez vérifier votre connexion internet ou réessayer plus tard.');
+        }
+        throw error;
+      }
     }
   </script>
 </body>
