@@ -398,14 +398,17 @@
               "Content-Type": "application/json",
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "X-User-Email": localStorage.getItem("userEmail"),
-              "Origin": window.location.origin
+              "Origin": window.location.origin,
+              "Accept": "application/json"
             },
             credentials: "include",
+            mode: "cors",
             body: JSON.stringify(payload)
           });
 
           if (!res.ok) {
-            const errorData = await res.json();
+            const errorData = await res.json().catch(() => ({ message: 'Erreur serveur' }));
+            console.error('Erreur serveur:', errorData);
             throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
           }
 

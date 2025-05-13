@@ -21,15 +21,18 @@ const corsOptions = {
       'http://localhost:5000',
       'https://owo-sender-frontend.onrender.com'
     ];
+    
     // En développement, accepter toutes les origines
     if (process.env.NODE_ENV !== 'production') {
       callback(null, true);
       return;
     }
+    
     // En production, vérifier les origines autorisées
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.log('CORS blocked for origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -45,8 +48,18 @@ const corsOptions = {
 // Appliquer CORS avant tout autre middleware
 app.use(cors(corsOptions));
 
-// Ajouter des en-têtes CORS supplémentaires pour les requêtes préliminaires
-app.options('*', cors(corsOptions));
+// Middleware pour ajouter des en-têtes CORS supplémentaires
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Max-Age', '86400');
+  }
+  next();
+});
 
 // Middleware pour gérer les sessions
 app.use(session({
