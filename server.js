@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 // Configuration CORS - doit être avant les autres middlewares
 app.use(cors({
-  origin: '*', // Autoriser toutes les origines
+  origin: ['https://owo-sender.onrender.com', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],

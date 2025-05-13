@@ -363,6 +363,8 @@
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "X-User-Email": localStorage.getItem("userEmail")
             },
+            credentials: "include",
+            mode: "cors",
             body: JSON.stringify(payload),
           });
 
