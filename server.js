@@ -11,16 +11,15 @@ const sendRoute = require("./routes/send");
 
 const app = express();
 // Utiliser le port de Render (10000) ou le port local (3000)
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 // Configuration CORS
-const corsOptions = {
-  origin: 'https://owo-sender.onrender.com',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With'],
+app.use(cors({
+  origin: ['https://owo-sender.onrender.com', 'http://localhost:3000'],
   credentials: true,
-  optionsSuccessStatus: 200
-};
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email']
+}));
 
 // Middleware de logging pour les requêtes
 app.use((req, res, next) => {
@@ -29,32 +28,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware CORS personnalisé
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://owo-sender.onrender.com');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    console.log('Requête OPTIONS reçue, envoi des en-têtes CORS');
-    return res.status(200).end();
-  }
-  
-  next();
-});
-
-// Middleware CORS d'Express
-app.use(cors(corsOptions));
-
 // Middleware pour gérer les sessions
 app.use(session({
-  secret: process.env.SESSION_SECRET || "ma-cle-secrete",
+  secret: 'votre_secret_tres_securise',
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none'
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 heures
   }
 }));
 
@@ -71,7 +53,17 @@ app.use("/api/send", sendRoute);
 
 // Route d'accueil
 app.get("/", (req, res) => {
-  res.send("Bienvenue sur le serveur OWO-SENDER !");
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Route pour servir envoie.html
+app.get('/envoie.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'envoie.html'));
+});
+
+// Route pour servir admin.html
+app.get('/admin.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 // Gestion des erreurs 404
@@ -82,8 +74,11 @@ app.use((req, res) => {
 
 // Gestion des erreurs globales
 app.use((err, req, res, next) => {
-  console.error("Erreur serveur:", err);
-  res.status(500).json({ message: "Une erreur est survenue sur le serveur" });
+  console.error('Erreur:', err);
+  res.status(500).json({
+    message: 'Une erreur est survenue',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Erreur interne du serveur'
+  });
 });
 
 // Connexion à MongoDB
