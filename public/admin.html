@@ -448,25 +448,25 @@
         <td>${t.envoyeurNumero || 'Non spécifié'}</td>
         <td>${t.operateur}</td>
         <td>
-          <select class="form-select form-select-sm" data-index="${i}">
+          <select class="form-select form-select-sm" data-id="${t._id}">
             <option ${t.statut === "En attente" ? "selected" : ""} data-i18n="pending">En attente</option>
             <option ${t.statut === "Terminé" ? "selected" : ""} data-i18n="completed">Terminé</option>
             <option ${t.statut === "Annulé" ? "selected" : ""} data-i18n="cancelled">Annulé</option>
           </select>
         </td>
         <td>
-          <button class="btn btn-sm btn-danger" onclick="deleteTransfert(${i})">🗑</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteTransfert('${t._id}')">🗑</button>
         </td>
       `;
       tableBody.appendChild(tr);
     });
 
-    document.querySelectorAll("select[data-index]").forEach(select => {
+    document.querySelectorAll("select[data-id]").forEach(select => {
       select.addEventListener("change", async function () {
-        const index = this.dataset.index;
+        const id = this.dataset.id;
         const statut = this.value;
         try {
-          const res = await fetch(`/api/send/update/${index}`, {
+          const res = await fetch(`/api/send/update/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ statut })
@@ -493,10 +493,10 @@
     afficherTransferts(filtres);
   }
 
-  async function deleteTransfert(index) {
+  async function deleteTransfert(id) {
     if (!confirm("Confirmer la suppression de ce transfert ?")) return;
     try {
-      const res = await fetch(`/api/send/delete/${index}`, { method: "DELETE" });
+      const res = await fetch(`/api/send/delete/${id}`, { method: "DELETE" });
       const msg = await res.json();
       if (res.ok) {
         showToast("🗑 Transfert supprimé !");

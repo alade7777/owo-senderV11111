@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const session = require("express-session");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 // Import des routes
 const authRoutes = require("./routes/auth");
@@ -85,10 +86,48 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Une erreur est survenue sur le serveur" });
 });
 
-// Lancement du serveur
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Serveur démarré sur le port ${PORT}`);
-  console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
+// Connexion à MongoDB
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ALADE:2002@cluster0.jjfxgas.mongodb.net/owo-sender?retryWrites=true&w=majority&appName=Cluster0';
+
+console.log('Tentative de connexion à MongoDB...');
+console.log('URI:', MONGODB_URI.replace(/:[^:@]+@/, ':****@')); // Masquer le mot de passe dans les logs
+
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000, // Timeout après 5 secondes
+  socketTimeoutMS: 45000, // Timeout des opérations après 45 secondes
+})
+.then(() => {
+  console.log('✅ Connecté à MongoDB');
+  // Lancement du serveur
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Serveur démarré sur le port ${PORT}`);
+    console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
+  });
+})
+.catch(err => {
+  console.error('❌ Erreur de connexion à MongoDB:', err);
+  console.error('Détails de l\'erreur:', {
+    name: err.name,
+    message: err.message,
+    code: err.code,
+    codeName: err.codeName
+  });
+  process.exit(1);
+});
+
+// Gestion des événements de connexion MongoDB
+mongoose.connection.on('error', err => {
+  console.error('❌ Erreur de connexion MongoDB:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️ Déconnecté de MongoDB');
+});
+
+mongoose.connection.on('reconnected', () => {
+  console.log('✅ Reconnexion à MongoDB réussie');
 });
 
 // Mail (si utilisé ailleurs)

@@ -1,140 +1,117 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path');
-const fs = require('fs');
-
-// Chemin vers le fichier de stockage
-const dataFile = path.join(__dirname, '..', 'transferts.json');
-
-// Fonctions utilitaires
-function readData() {
-    try {
-        if (!fs.existsSync(dataFile)) {
-            return [];
-        }
-        return JSON.parse(fs.readFileSync(dataFile, 'utf8'));
-    } catch (error) {
-        console.error('Erreur de lecture:', error);
-        return [];
-    }
-}
-
-function writeData(data) {
-    try {
-        fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
-        return true;
-    } catch (error) {
-        console.error('Erreur d\'écriture:', error);
-        return false;
-    }
-}
+const Transfert = require('../models/Transfert');
 
 // Créer une nouvelle demande
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
+        console.log('Nouvelle demande de transfert reçue:', req.body);
+        
         // Validation des données requises
         const requiredFields = ['pays', 'montant', 'total', 'operateur', 'numero', 'nom', 'envoyeurNom', 'envoyeurNumero'];
         const missingFields = requiredFields.filter(field => !req.body[field]);
         
         if (missingFields.length > 0) {
+            console.log('Champs manquants:', missingFields);
             return res.status(400).json({ 
                 message: 'Champs manquants', 
                 fields: missingFields 
             });
         }
 
-        const requests = readData();
-        const newRequest = {
-            id: Date.now().toString(),
+        const newTransfert = new Transfert({
             ...req.body,
             statut: 'En attente',
-            date: new Date().toISOString()
-        };
+            date: new Date()
+        });
+
+        console.log('Tentative de sauvegarde du transfert:', newTransfert);
+        const savedTransfert = await newTransfert.save();
+        console.log('Transfert sauvegardé avec succès:', savedTransfert);
         
-        if (writeData([...requests, newRequest])) {
-            res.status(201).json({ 
-                message: 'Transfert enregistré avec succès', 
-                request: newRequest 
-            });
-        } else {
-            throw new Error('Erreur lors de l\'enregistrement');
-        }
+        res.status(201).json({ 
+            message: 'Transfert enregistré avec succès', 
+            request: savedTransfert 
+        });
     } catch (error) {
-        console.error('Erreur:', error);
+        console.error('Erreur lors de la création du transfert:', error);
         res.status(500).json({ 
-            message: 'Une erreur est survenue. Veuillez réessayer.' 
+            message: 'Une erreur est survenue lors de l\'enregistrement du transfert',
+            error: error.message
         });
     }
 });
 
 // Obtenir toutes les demandes (pour l'admin)
-router.get('/all', (req, res) => {
+router.get('/all', async (req, res) => {
     try {
-        const requests = readData();
-        res.json(requests);
+        console.log('Récupération de tous les transferts...');
+        const transferts = await Transfert.find().sort({ date: -1 });
+        console.log(`${transferts.length} transferts trouvés`);
+        res.json(transferts);
     } catch (error) {
-        console.error('Erreur:', error);
+        console.error('Erreur lors de la récupération des transferts:', error);
         res.status(500).json({ 
-            message: 'Une erreur est survenue lors de la récupération des transferts.' 
+            message: 'Une erreur est survenue lors de la récupération des transferts',
+            error: error.message
         });
     }
 });
 
 // Mettre à jour le statut
-router.patch('/update/:index', (req, res) => {
+router.patch('/update/:id', async (req, res) => {
     try {
-        const requests = readData();
-        const index = parseInt(req.params.index);
+        console.log(`Mise à jour du transfert ${req.params.id} avec le statut:`, req.body.statut);
         
-        if (isNaN(index) || index < 0 || index >= requests.length) {
+        const transfert = await Transfert.findById(req.params.id);
+        
+        if (!transfert) {
+            console.log('Transfert non trouvé:', req.params.id);
             return res.status(404).json({ 
                 message: 'Transfert non trouvé' 
             });
         }
         
-        requests[index].statut = req.body.statut;
+        transfert.statut = req.body.statut;
+        const updatedTransfert = await transfert.save();
+        console.log('Transfert mis à jour avec succès:', updatedTransfert);
         
-        if (writeData(requests)) {
-            res.json({ 
-                message: 'Statut mis à jour', 
-                request: requests[index] 
-            });
-        } else {
-            throw new Error('Erreur lors de la mise à jour');
-        }
+        res.json({ 
+            message: 'Statut mis à jour', 
+            request: updatedTransfert 
+        });
     } catch (error) {
-        console.error('Erreur:', error);
+        console.error('Erreur lors de la mise à jour du transfert:', error);
         res.status(500).json({ 
-            message: 'Une erreur est survenue. Veuillez réessayer.' 
+            message: 'Une erreur est survenue lors de la mise à jour du statut',
+            error: error.message
         });
     }
 });
 
 // Supprimer un transfert
-router.delete('/delete/:index', (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
-        const requests = readData();
-        const index = parseInt(req.params.index);
+        console.log('Suppression du transfert:', req.params.id);
         
-        if (isNaN(index) || index < 0 || index >= requests.length) {
+        const transfert = await Transfert.findByIdAndDelete(req.params.id);
+        
+        if (!transfert) {
+            console.log('Transfert non trouvé pour suppression:', req.params.id);
             return res.status(404).json({ 
                 message: 'Transfert non trouvé' 
             });
         }
         
-        requests.splice(index, 1);
-        
-        if (writeData(requests)) {
-            res.json({ 
-                message: 'Transfert supprimé avec succès' 
-            });
-        } else {
-            throw new Error('Erreur lors de la suppression');
-        }
+        console.log('Transfert supprimé avec succès:', transfert);
+        res.json({ 
+            message: 'Transfert supprimé avec succès' 
+        });
     } catch (error) {
-        console.error('Erreur:', error);
+        console.error('Erreur lors de la suppression du transfert:', error);
         res.status(500).json({ 
-            message: 'Une erreur est survenue. Veuillez réessayer.' 
+            message: 'Une erreur est survenue lors de la suppression du transfert',
+            error: error.message
         });
     }
 });
