@@ -50,6 +50,14 @@ const transfertSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model('Transfert', transfertSchema); 
+// Ajout d'index pour améliorer les performances
+transfertSchema.index({ date: -1 });
+transfertSchema.index({ statut: 1 });
+
+const Transfert = mongoose.model('Transfert', transfertSchema);
+
+module.exports = Transfert; 
