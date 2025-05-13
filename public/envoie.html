@@ -398,11 +398,9 @@
               "Content-Type": "application/json",
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "X-User-Email": localStorage.getItem("userEmail"),
-              "Origin": window.location.origin,
               "Accept": "application/json"
             },
             credentials: "include",
-            mode: "cors",
             body: JSON.stringify(payload)
           });
 

@@ -12,52 +12,30 @@ const app = express();
 // Utiliser le port de Render (10000) ou le port local (3000)
 const PORT = process.env.PORT || 3000;
 
-// Configuration CORS - doit être avant les autres middlewares
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'https://owo-sender.onrender.com',
-      'http://localhost:3000',
-      'http://localhost:5000',
-      'https://owo-sender-frontend.onrender.com'
-    ];
-    
-    // En développement, accepter toutes les origines
-    if (process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-      return;
-    }
-    
-    // En production, vérifier les origines autorisées
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('CORS blocked for origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  credentials: true,
-  maxAge: 86400, // 24 heures
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-};
-
-// Appliquer CORS avant tout autre middleware
-app.use(cors(corsOptions));
-
-// Middleware pour ajouter des en-têtes CORS supplémentaires
+// Configuration des en-têtes CORS
 app.use((req, res, next) => {
+  const allowedOrigins = [
+    'https://owo-sender.onrender.com',
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'https://owo-sender-frontend.onrender.com'
+  ];
+  
   const origin = req.headers.origin;
-  if (origin) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Max-Age', '86400');
   }
+  
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-User-Email, Accept, Origin, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  
+  // Gérer les requêtes OPTIONS
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+  
   next();
 });
 
