@@ -365,6 +365,53 @@
     });
     observer.observe(element);
   });
+
+  async function envoyerTransfert(e) {
+    e.preventDefault();
+    
+    try {
+      console.log('Envoi du transfert...');
+      const formData = {
+        pays: document.getElementById("pays").value,
+        montant: parseFloat(document.getElementById("montant").value),
+        total: parseFloat(document.getElementById("total").value),
+        operateur: document.getElementById("operateur").value,
+        numero: document.getElementById("numero").value,
+        nom: document.getElementById("nom").value,
+        message: document.getElementById("message").value,
+        envoyeurNom: document.getElementById("envoyeurNom").value,
+        envoyeurNumero: document.getElementById("envoyeurNumero").value,
+        userEmail: localStorage.getItem('userEmail')
+      };
+
+      console.log('Données du formulaire:', formData);
+
+      const res = await fetch('https://owo-sender-backend.onrender.com/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'X-User-Email': localStorage.getItem('userEmail')
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Erreur lors de l\'envoi du transfert');
+      }
+
+      const result = await res.json();
+      console.log('Transfert envoyé avec succès:', result);
+      
+      showToast("✅ Transfert envoyé avec succès !");
+      document.getElementById("transfertForm").reset();
+      
+    } catch (err) {
+      console.error('Erreur lors de l\'envoi du transfert:', err);
+      showToast('❌ Erreur lors de l\'envoi du transfert');
+    }
+  }
 </script>
 
 <style>

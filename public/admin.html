@@ -421,12 +421,28 @@
 
   async function chargerTransferts() {
     try {
-      const res = await fetch("/api/send/all");
-      transfertsOriginaux = await res.json();
-      afficherTransferts(transfertsOriginaux);
+      console.log('Chargement des transferts...');
+      const res = await fetch('https://owo-sender-backend.onrender.com/api/send/all', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'X-User-Email': localStorage.getItem('userEmail')
+        },
+        credentials: 'include'
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Erreur lors du chargement des transferts');
+      }
+
+      const data = await res.json();
+      console.log('Transferts reçus:', data);
+      afficherTransferts(data);
     } catch (err) {
-      console.error(err);
-      alert("Erreur lors du chargement des transferts");
+      console.error('Erreur:', err);
+      showToast('❌ Erreur lors du chargement des transferts');
     }
   }
 
@@ -434,7 +450,16 @@
     const tableBody = document.getElementById("transfertTableBody");
     tableBody.innerHTML = "";
 
+    if (!data || data.length === 0) {
+      console.log('Aucun transfert trouvé');
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="12" class="text-center">Aucun transfert trouvé</td>`;
+      tableBody.appendChild(tr);
+      return;
+    }
+
     data.forEach((t, i) => {
+      console.log('Affichage du transfert:', t);
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${i + 1}</td>
@@ -461,21 +486,36 @@
       tableBody.appendChild(tr);
     });
 
+    // Ajouter les écouteurs d'événements pour les selects
     document.querySelectorAll("select[data-id]").forEach(select => {
       select.addEventListener("change", async function () {
         const id = this.dataset.id;
         const statut = this.value;
         try {
-          const res = await fetch(`/api/send/update/${id}`, {
+          console.log(`Mise à jour du statut pour le transfert ${id} vers ${statut}`);
+          const res = await fetch(`https://owo-sender-backend.onrender.com/api/send/update/${id}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'X-User-Email': localStorage.getItem('userEmail')
+            },
             body: JSON.stringify({ statut })
           });
-          const msg = await res.json();
-          if (res.ok) showToast("✅ Statut mis à jour");
-          else alert(msg.message || "Erreur");
-        } catch {
-          alert("Erreur réseau.");
+
+          if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.message || 'Erreur lors de la mise à jour');
+          }
+
+          const result = await res.json();
+          console.log('Mise à jour réussie:', result);
+          showToast("✅ Statut mis à jour");
+        } catch (err) {
+          console.error('Erreur lors de la mise à jour:', err);
+          showToast('❌ Erreur lors de la mise à jour du statut');
+          // Recharger les transferts pour revenir à l'état précédent
+          await chargerTransferts();
         }
       });
     });
@@ -495,18 +535,30 @@
 
   async function deleteTransfert(id) {
     if (!confirm("Confirmer la suppression de ce transfert ?")) return;
+    
     try {
-      const res = await fetch(`/api/send/delete/${id}`, { method: "DELETE" });
-      const msg = await res.json();
-      if (res.ok) {
-        showToast("🗑 Transfert supprimé !");
-        await chargerTransferts();
-      } else {
-        alert(msg.message || "Erreur serveur.");
+      console.log('Suppression du transfert:', id);
+      const res = await fetch(`https://owo-sender-backend.onrender.com/api/send/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'X-User-Email': localStorage.getItem('userEmail')
+        }
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Erreur lors de la suppression');
       }
+
+      const result = await res.json();
+      console.log('Suppression réussie:', result);
+      showToast("🗑 Transfert supprimé !");
+      await chargerTransferts();
     } catch (err) {
-      console.error(err);
-      alert("Erreur réseau.");
+      console.error('Erreur lors de la suppression:', err);
+      showToast('❌ Erreur lors de la suppression du transfert');
     }
   }
 
