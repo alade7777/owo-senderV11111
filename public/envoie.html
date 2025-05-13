@@ -387,18 +387,20 @@
 
         try {
           const API_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:5000/api/send'
+            ? 'http://localhost:3000/api/send'
             : 'https://owo-sender-backend.onrender.com/api/send';
+
+          console.log("Tentative de connexion à:", API_URL);
 
           const res = await fetch(API_URL, {
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
-              "X-User-Email": localStorage.getItem("userEmail")
+              "X-User-Email": localStorage.getItem("userEmail"),
+              "Origin": window.location.origin
             },
             credentials: "include",
-            mode: "cors",
             body: JSON.stringify(payload)
           });
 
@@ -410,17 +412,42 @@
           const data = await res.json();
           console.log("Réponse du serveur:", data);
 
+          // Vérifier si les éléments existent avant de les utiliser
           const toast = document.getElementById("toastSuccess");
-          const bsToast = new bootstrap.Toast(toast);
-          toast.querySelector(".toast-body").textContent = data.message || "Transfert enregistré avec succès.";
-          bsToast.show();
-          sendForm.reset();
-          totalInput.value = "0 FCFA";
+          if (toast) {
+            const bsToast = new bootstrap.Toast(toast);
+            const toastBody = toast.querySelector(".toast-body");
+            if (toastBody) {
+              toastBody.textContent = data.message || "Transfert enregistré avec succès.";
+            }
+            bsToast.show();
+          }
+
+          if (sendForm) sendForm.reset();
+          if (totalInput) totalInput.value = "0 FCFA";
         } catch (error) {
           console.error("Erreur:", error);
-          const toast = document.getElementById("toastError");
-          const bsToast = new bootstrap.Toast(toast);
-          toast.querySelector(".toast-body").textContent = error.message || "Une erreur est survenue. Veuillez réessayer.";
+          // Créer un toast d'erreur s'il n'existe pas
+          let toastError = document.getElementById("toastError");
+          if (!toastError) {
+            toastError = document.createElement("div");
+            toastError.id = "toastError";
+            toastError.className = "toast align-items-center text-white bg-danger border-0";
+            toastError.setAttribute("role", "alert");
+            toastError.innerHTML = `
+              <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+              </div>
+            `;
+            document.querySelector(".toast-container").appendChild(toastError);
+          }
+          
+          const bsToast = new bootstrap.Toast(toastError);
+          const toastBody = toastError.querySelector(".toast-body");
+          if (toastBody) {
+            toastBody.textContent = error.message || "Une erreur est survenue. Veuillez réessayer.";
+          }
           bsToast.show();
         }
       });

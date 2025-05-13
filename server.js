@@ -34,13 +34,19 @@ const corsOptions = {
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   credentials: true,
-  maxAge: 86400 // 24 heures
+  maxAge: 86400, // 24 heures
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
 
+// Appliquer CORS avant tout autre middleware
 app.use(cors(corsOptions));
+
+// Ajouter des en-têtes CORS supplémentaires pour les requêtes préliminaires
+app.options('*', cors(corsOptions));
 
 // Middleware pour gérer les sessions
 app.use(session({
