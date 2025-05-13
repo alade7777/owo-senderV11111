@@ -386,32 +386,42 @@
         console.log("Données envoyées:", payload);
 
         try {
-          const res = await fetch("https://owo-sender-backend.onrender.com/api/send", {
+          const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:5000/api/send'
+            : 'https://owo-sender-backend.onrender.com/api/send';
+
+          const res = await fetch(API_URL, {
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "X-User-Email": localStorage.getItem("userEmail")
             },
+            credentials: "include",
+            mode: "cors",
             body: JSON.stringify(payload)
           });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+          }
 
           const data = await res.json();
           console.log("Réponse du serveur:", data);
 
-          if (res.ok) {
-            const toast = document.getElementById("toastSuccess");
-            const bsToast = new bootstrap.Toast(toast);
-            toast.querySelector(".toast-body").textContent = data.message || "Transfert enregistré avec succès.";
-            bsToast.show();
-            sendForm.reset();
-            totalInput.value = "0 FCFA";
-          } else {
-            alert(data.message || "Erreur lors de l'envoi. Veuillez réessayer.");
-          }
+          const toast = document.getElementById("toastSuccess");
+          const bsToast = new bootstrap.Toast(toast);
+          toast.querySelector(".toast-body").textContent = data.message || "Transfert enregistré avec succès.";
+          bsToast.show();
+          sendForm.reset();
+          totalInput.value = "0 FCFA";
         } catch (error) {
           console.error("Erreur:", error);
-          alert("Une erreur est survenue. Veuillez réessayer.");
+          const toast = document.getElementById("toastError");
+          const bsToast = new bootstrap.Toast(toast);
+          toast.querySelector(".toast-body").textContent = error.message || "Une erreur est survenue. Veuillez réessayer.";
+          bsToast.show();
         }
       });
     }
