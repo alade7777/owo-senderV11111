@@ -4,38 +4,66 @@ const path = require('path');
 const fs = require('fs');
 
 // Chemin vers le fichier de stockage
-const dataFile = path.join(__dirname, '..', 'data', 'requests.json');
+const dataFile = path.join(__dirname, '..', 'transferts.json');
 
 // Fonctions utilitaires
 function readData() {
-    if (!fs.existsSync(dataFile)) {
+    try {
+        if (!fs.existsSync(dataFile)) {
+            return [];
+        }
+        return JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+    } catch (error) {
+        console.error('Erreur de lecture:', error);
         return [];
     }
-    return JSON.parse(fs.readFileSync(dataFile, 'utf8'));
 }
 
 function writeData(data) {
-    fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+    try {
+        fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+        return true;
+    } catch (error) {
+        console.error('Erreur d\'écriture:', error);
+        return false;
+    }
 }
 
 // Créer une nouvelle demande
 router.post('/', (req, res) => {
     try {
+        // Validation des données requises
+        const requiredFields = ['pays', 'montant', 'total', 'operateur', 'numero', 'nom', 'envoyeurNom', 'envoyeurNumero'];
+        const missingFields = requiredFields.filter(field => !req.body[field]);
+        
+        if (missingFields.length > 0) {
+            return res.status(400).json({ 
+                message: 'Champs manquants', 
+                fields: missingFields 
+            });
+        }
+
         const requests = readData();
         const newRequest = {
             id: Date.now().toString(),
             ...req.body,
-            status: 'en_attente',
-            createdAt: new Date().toISOString()
+            statut: 'En attente',
+            date: new Date().toISOString()
         };
         
-        requests.push(newRequest);
-        writeData(requests);
-        
-        res.status(201).json({ message: 'Demande enregistrée avec succès', request: newRequest });
+        if (writeData([...requests, newRequest])) {
+            res.status(201).json({ 
+                message: 'Transfert enregistré avec succès', 
+                request: newRequest 
+            });
+        } else {
+            throw new Error('Erreur lors de l\'enregistrement');
+        }
     } catch (error) {
         console.error('Erreur:', error);
-        res.status(500).json({ message: 'Erreur lors de l\'enregistrement' });
+        res.status(500).json({ 
+            message: 'Une erreur est survenue. Veuillez réessayer.' 
+        });
     }
 });
 
@@ -46,43 +74,68 @@ router.get('/all', (req, res) => {
         res.json(requests);
     } catch (error) {
         console.error('Erreur:', error);
-        res.status(500).json({ message: 'Erreur lors de la lecture' });
-    }
-});
-
-// Obtenir les demandes d'un utilisateur
-router.get('/user/:email', (req, res) => {
-    try {
-        const requests = readData();
-        const userRequests = requests.filter(r => r.clientEmail === req.params.email);
-        res.json(userRequests);
-    } catch (error) {
-        console.error('Erreur:', error);
-        res.status(500).json({ message: 'Erreur lors de la lecture' });
+        res.status(500).json({ 
+            message: 'Une erreur est survenue. Veuillez réessayer.' 
+        });
     }
 });
 
 // Mettre à jour le statut
-router.patch('/:id', (req, res) => {
+router.patch('/update/:index', (req, res) => {
     try {
         const requests = readData();
-        const index = requests.findIndex(r => r.id === req.params.id);
+        const index = parseInt(req.params.index);
         
-        if (index === -1) {
-            return res.status(404).json({ message: 'Demande non trouvée' });
+        if (isNaN(index) || index < 0 || index >= requests.length) {
+            return res.status(404).json({ 
+                message: 'Transfert non trouvé' 
+            });
         }
         
-        requests[index] = {
-            ...requests[index],
-            ...req.body,
-            updatedAt: new Date().toISOString()
-        };
+        requests[index].statut = req.body.statut;
         
-        writeData(requests);
-        res.json({ message: 'Statut mis à jour', request: requests[index] });
+        if (writeData(requests)) {
+            res.json({ 
+                message: 'Statut mis à jour', 
+                request: requests[index] 
+            });
+        } else {
+            throw new Error('Erreur lors de la mise à jour');
+        }
     } catch (error) {
         console.error('Erreur:', error);
-        res.status(500).json({ message: 'Erreur lors de la mise à jour' });
+        res.status(500).json({ 
+            message: 'Une erreur est survenue. Veuillez réessayer.' 
+        });
+    }
+});
+
+// Supprimer un transfert
+router.delete('/delete/:index', (req, res) => {
+    try {
+        const requests = readData();
+        const index = parseInt(req.params.index);
+        
+        if (isNaN(index) || index < 0 || index >= requests.length) {
+            return res.status(404).json({ 
+                message: 'Transfert non trouvé' 
+            });
+        }
+        
+        requests.splice(index, 1);
+        
+        if (writeData(requests)) {
+            res.json({ 
+                message: 'Transfert supprimé avec succès' 
+            });
+        } else {
+            throw new Error('Erreur lors de la suppression');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ 
+            message: 'Une erreur est survenue. Veuillez réessayer.' 
+        });
     }
 });
 
