@@ -335,6 +335,36 @@
       return cleanPhone;
     }
 
+    // 🌍 Langue
+    const langSelect = document.getElementById("languageSelect");
+    if (langSelect) {  // Vérifier si l'élément existe
+      const savedLang = localStorage.getItem("lang") || "fr";
+      langSelect.value = savedLang;
+      updateLanguage(savedLang);
+
+      langSelect.addEventListener("change", () => {
+        const lang = langSelect.value;
+        localStorage.setItem("lang", lang);
+        updateLanguage(lang);
+      });
+    }
+
+    function updateLanguage(lang) {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (translations[lang] && translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (translations[lang] && translations[lang][key]) {
+          el.setAttribute("placeholder", translations[lang][key]);
+        }
+      });
+    }
+
     const sendForm = document.getElementById("sendForm");
     if (sendForm) {
       sendForm.addEventListener("submit", async function (e) {
@@ -363,9 +393,7 @@
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "X-User-Email": localStorage.getItem("userEmail")
             },
-            credentials: "include",
-            mode: "cors",
-            body: JSON.stringify(payload),
+            body: JSON.stringify(payload)
           });
 
           const data = await res.json();
@@ -384,34 +412,6 @@
         } catch (error) {
           console.error("Erreur:", error);
           alert("Une erreur est survenue. Veuillez réessayer.");
-        }
-      });
-    }
-
-    // 🌍 Langue
-    const langSelect = document.getElementById("languageSelect");
-    const savedLang = localStorage.getItem("lang") || "fr";
-    langSelect.value = savedLang;
-    updateLanguage(savedLang);
-
-    langSelect.addEventListener("change", () => {
-      const lang = langSelect.value;
-      localStorage.setItem("lang", lang);
-      updateLanguage(lang);
-    });
-
-    function updateLanguage(lang) {
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (translations[lang] && translations[lang][key]) {
-          el.textContent = translations[lang][key];
-        }
-      });
-
-      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
-        const key = el.getAttribute("data-i18n-placeholder");
-        if (translations[lang] && translations[lang][key]) {
-          el.setAttribute("placeholder", translations[lang][key]);
         }
       });
     }
