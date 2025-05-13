@@ -12,31 +12,13 @@ const app = express();
 // Utiliser le port de Render (10000) ou le port local (3000)
 const PORT = process.env.PORT || 3000;
 
-// Configuration CORS
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'https://owo-sender.onrender.com',
-      'https://owo-sender-frontend.onrender.com',
-      'http://localhost:3000',
-      'http://localhost:5000'
-    ];
-    
-    // Autoriser les requêtes sans origine (comme les requêtes mobiles ou curl)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('Origin non autorisé:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+// Configuration CORS simple
+app.use(cors({
+  origin: 'https://owo-sender.onrender.com',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With'],
-  maxAge: 86400
-};
-
-app.use(cors(corsOptions));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Email', 'Accept', 'Origin', 'X-Requested-With']
+}));
 
 // Middleware pour gérer les sessions
 app.use(session({
