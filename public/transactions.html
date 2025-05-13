@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="transactionsTitle">Transactions - OWO-SENDER</title>
+    <title>Mes Transactions - OWO-SENDER</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -226,299 +226,298 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header-container">
-            <a href="index.html" class="btn btn-outline-primary rounded-pill">
-                <i class="fas fa-arrow-left me-2"></i><span data-i18n="back">Retour</span>
+    <header class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 border-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <img src="images/LOGO.png" alt="OWO-SENDER Logo" height="40">
             </a>
-            <div class="dropdown">
-                <div id="userAvatar" class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false"></div>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userAvatar">
-                    <li><a class="dropdown-item" href="profil.html"><i class="fas fa-user me-2"></i><span data-i18n="profile">Profil</span></a></li>
-                    <li><a class="dropdown-item" href="transactions.html"><i class="fas fa-history me-2"></i><span data-i18n="transactions">Transactions</span></a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i><span data-i18n="logout">Déconnexion</span></a></li>
-                </ul>
+            <div class="d-flex align-items-center gap-3">
+                <div id="userWidget">
+                    <div class="dropdown">
+                        <button class="btn p-0 border-0 bg-transparent" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                            <div id="userAvatar" class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;"></div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profil.html"><i class="fas fa-user me-2"></i>Profil</a></li>
+                            <li><a class="dropdown-item" href="transactions.html"><i class="fas fa-history me-2"></i>Transactions</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-4">
+        <h2 class="mb-4">Mes Transactions</h2>
+
+        <!-- Filtres -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="🔍 Rechercher par nom ou numéro...">
+            </div>
+            <div class="col-md-4">
+                <select id="filterStatut" class="form-select">
+                    <option value="">📂 Tous les statuts</option>
+                    <option value="En attente">En attente</option>
+                    <option value="Terminé">Terminé</option>
+                    <option value="Annulé">Annulé</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="date" id="filterDate" class="form-control">
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-12">
-                <h2 class="page-title">
-                    <i class="fas fa-history me-2"></i><span data-i18n="myTransactions">Mes Transactions</span>
-                </h2>
+        <!-- Tableau des transactions -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Destinataire</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsTableBody"></tbody>
+            </table>
+        </div>
+    </main>
 
-                <!-- Statistiques -->
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="stats-card p-4">
-                            <div class="d-flex align-items-center">
-                                <div class="icon me-3">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div>
-                                    <div class="number" id="completedCount">0</div>
-                                    <div class="text-muted" data-i18n="completedTransactions">Transactions complétées</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stats-card p-4">
-                            <div class="d-flex align-items-center">
-                                <div class="icon me-3">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div>
-                                    <div class="number" id="totalAmount">0 FCFA</div>
-                                    <div class="text-muted" data-i18n="totalAmount">Montant total</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stats-card p-4">
-                            <div class="d-flex align-items-center">
-                                <div class="icon me-3">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div>
-                                    <div class="number" id="pendingCount">0</div>
-                                    <div class="text-muted" data-i18n="pendingTransactions">En attente</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Modal pour les détails -->
+    <div class="modal fade" id="detailsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Détails de la transaction</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                
-                <!-- Filtres -->
-                <div class="filter-card">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold"><i class="fas fa-filter me-2"></i><span data-i18n="status">Statut</span></label>
-                            <select class="form-select" id="statusFilter">
-                                <option value="all" data-i18n="all">Tous</option>
-                                <option value="completed" data-i18n="completed">Complétées</option>
-                                <option value="pending" data-i18n="pending">En attente</option>
-                                <option value="failed" data-i18n="failed">Échouées</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold"><i class="fas fa-calendar me-2"></i><span data-i18n="date">Date</span></label>
-                            <input type="date" class="form-control" id="dateFilter">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold"><i class="fas fa-money-bill me-2"></i><span data-i18n="amount">Montant</span></label>
-                            <input type="number" class="form-control" id="amountFilter" data-i18n-placeholder="minAmount" placeholder="Montant minimum">
-                        </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Date:</div>
+                        <div class="col-8" id="modalDate"></div>
                     </div>
-                </div>
-
-                <!-- Liste des transactions -->
-                <div class="transaction-card">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th data-i18n="transactionId">Transaction</th>
-                                    <th data-i18n="date">Date</th>
-                                    <th data-i18n="recipient">Destinataire</th>
-                                    <th data-i18n="amount">Montant</th>
-                                    <th data-i18n="status">Statut</th>
-                                    <th data-i18n="actions">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transactionsList">
-                                <!-- Les transactions seront ajoutées ici dynamiquement -->
-                            </tbody>
-                        </table>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Pays:</div>
+                        <div class="col-8" id="modalPays"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Montant:</div>
+                        <div class="col-8" id="modalMontant"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Total:</div>
+                        <div class="col-8" id="modalTotal"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Opérateur:</div>
+                        <div class="col-8" id="modalOperateur"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Numéro:</div>
+                        <div class="col-8" id="modalNumero"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Nom:</div>
+                        <div class="col-8" id="modalNom"></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Statut:</div>
+                        <div class="col-8" id="modalStatut"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Toast pour les notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMsg"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="dark-mode.js"></script>
-    <script src="lang.js"></script>
     <script>
-        // Vérification du mode sombre
-        const isDark = localStorage.getItem("theme") === "dark";
-        if (isDark) {
-            document.body.classList.add("dark");
-        }
+        let transactions = [];
 
-        // Vérification de l'authentification
-        const email = localStorage.getItem("userEmail");
-        if (!email) {
-            window.location.href = "connexion.html";
-        }
+        // Fonction pour charger les transactions de l'utilisateur
+        async function chargerTransactions() {
+            try {
+                console.log('Chargement des transactions...');
+                const res = await fetch('https://owo-sender-backend.onrender.com/api/send/all', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'X-User-Email': localStorage.getItem('userEmail')
+                    },
+                    credentials: 'include'
+                });
 
-        // Initialisation de l'avatar
-        const name = localStorage.getItem("userName");
-        const avatar = document.getElementById("userAvatar");
-        avatar.textContent = name?.trim().charAt(0).toUpperCase() || "?";
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Erreur lors du chargement des transactions');
+                }
 
-        // Gestion de la déconnexion
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-            localStorage.removeItem("userName");
-            localStorage.removeItem("userEmail");
-            window.location.href = "index.html";
-        });
-
-        // Fonction pour mettre à jour les statistiques
-        function updateStats(transactions) {
-            const completed = transactions.filter(t => t.status === 'completed').length;
-            const pending = transactions.filter(t => t.status === 'pending').length;
-            const totalAmount = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
-
-            document.getElementById('completedCount').textContent = completed;
-            document.getElementById('pendingCount').textContent = pending;
-            document.getElementById('totalAmount').textContent = totalAmount.toLocaleString() + ' FCFA';
-        }
-
-        // Écouter les mises à jour des transactions
-        window.addEventListener('transactionUpdated', (event) => {
-            const { transactionId, newStatus, updatedAt } = event.detail;
-            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
-            const transactionIndex = transactions.findIndex(t => t.id === transactionId);
-            
-            if (transactionIndex !== -1) {
-                transactions[transactionIndex].status = newStatus;
-                transactions[transactionIndex].updatedAt = updatedAt;
-                localStorage.setItem('transactions', JSON.stringify(transactions));
-                loadTransactions(); // Recharger l'affichage
+                const data = await res.json();
+                console.log('Transactions reçues:', data);
+                
+                // Filtrer les transactions pour n'afficher que celles de l'utilisateur connecté
+                const userEmail = localStorage.getItem('userEmail');
+                transactions = data.filter(t => t.userEmail === userEmail);
+                
+                afficherTransactions(transactions);
+            } catch (err) {
+                console.error('Erreur:', err);
+                showToast('❌ Erreur lors du chargement des transactions');
             }
-        });
+        }
 
-        // Fonction pour charger les transactions
-        function loadTransactions() {
-            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
-            const transactionsList = document.getElementById('transactionsList');
-            transactionsList.innerHTML = '';
+        // Fonction pour afficher les transactions
+        function afficherTransactions(data) {
+            const tableBody = document.getElementById("transactionsTableBody");
+            tableBody.innerHTML = "";
 
-            // Filtrer les transactions de l'utilisateur connecté
-            const userTransactions = transactions.filter(transaction => 
-                transaction.senderEmail === email || transaction.recipientEmail === email
-            );
+            if (!data || data.length === 0) {
+                console.log('Aucune transaction trouvée');
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td colspan="6" class="text-center">Aucune transaction trouvée</td>`;
+                tableBody.appendChild(tr);
+                return;
+            }
 
-            // Mettre à jour les statistiques avec uniquement les transactions de l'utilisateur
-            updateStats(userTransactions);
-
-            // Appliquer les filtres
-            const status = document.getElementById('statusFilter').value;
-            const date = document.getElementById('dateFilter').value;
-            const amount = document.getElementById('amountFilter').value;
-
-            const filteredTransactions = userTransactions.filter(transaction => {
-                const matchesStatus = status === 'all' || transaction.status === status;
-                const matchesDate = !date || transaction.date.startsWith(date);
-                const matchesAmount = !amount || transaction.amount >= parseInt(amount);
-
-                return matchesStatus && matchesDate && matchesAmount;
-            });
-
-            filteredTransactions.forEach(transaction => {
-                const row = document.createElement('tr');
-                const isSender = transaction.senderEmail === email;
-                row.innerHTML = `
+            data.forEach((t, i) => {
+                console.log('Affichage de la transaction:', t);
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${new Date(t.date).toLocaleString()}</td>
+                    <td>${t.nom} (${t.numero})</td>
+                    <td>${t.montant.toLocaleString()} FCFA</td>
                     <td>
-                        <div class="d-flex align-items-center">
-                            <div class="transaction-icon ${isSender ? 'sent' : 'received'}">
-                                <i class="fas ${isSender ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold">${transaction.id}</div>
-                                <small class="text-muted" data-i18n="${isSender ? 'sent' : 'received'}">${isSender ? 'Envoi' : 'Réception'}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="fw-bold">${new Date(transaction.date).toLocaleDateString()}</div>
-                        <small class="text-muted">${new Date(transaction.date).toLocaleTimeString()}</small>
-                    </td>
-                    <td>
-                        <div class="fw-bold">${isSender ? transaction.recipient : transaction.sender}</div>
-                        <small class="text-muted">${isSender ? transaction.recipientPhone : transaction.senderEmail}</small>
-                    </td>
-                    <td>
-                        <div class="fw-bold">${transaction.amount.toLocaleString()} FCFA</div>
-                        <small class="text-muted" data-i18n="fees">Frais: ${(transaction.fees || 0).toLocaleString()} FCFA</small>
-                    </td>
-                    <td>
-                        <span class="badge ${getStatusBadgeClass(transaction.status)}">
-                            ${getStatusText(transaction.status)}
+                        <span class="badge ${getStatusBadgeClass(t.statut)}">
+                            ${t.statut}
                         </span>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-view btn-primary" onclick="viewTransactionDetails(event, '${transaction.id}')">
-                            <i class="fas fa-eye me-1"></i> <span data-i18n="viewDetails">Détails</span>
+                        <button class="btn btn-sm btn-info" onclick="voirDetails('${t._id}')">
+                            <i class="fas fa-eye"></i>
                         </button>
                     </td>
                 `;
-                transactionsList.appendChild(row);
+                tableBody.appendChild(tr);
             });
         }
 
         // Fonction pour obtenir la classe CSS du badge selon le statut
-        function getStatusBadgeClass(status) {
-            switch(status.toLowerCase()) {
-                case 'completed':
+        function getStatusBadgeClass(statut) {
+            switch(statut) {
+                case 'Terminé':
                     return 'bg-success';
-                case 'pending':
+                case 'En attente':
                     return 'bg-warning';
-                case 'failed':
+                case 'Annulé':
                     return 'bg-danger';
                 default:
                     return 'bg-secondary';
             }
         }
 
-        // Fonction pour obtenir le texte du statut
-        function getStatusText(status) {
-            switch(status.toLowerCase()) {
-                case 'completed':
-                    return 'Complétée';
-                case 'pending':
-                    return 'En attente';
-                case 'failed':
-                    return 'Échouée';
-                default:
-                    return status;
-            }
-        }
-
         // Fonction pour voir les détails d'une transaction
-        function viewTransactionDetails(event, id) {
-            event.preventDefault();
-            event.stopPropagation();
-            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
-            const transaction = transactions.find(t => t.id === id);
-            
-            if (transaction && (transaction.senderEmail === email || transaction.recipientEmail === email)) {
-                const isSender = transaction.senderEmail === email;
-                alert(`
-                    Détails de la transaction:
-                    ID: ${transaction.id}
-                    Date: ${new Date(transaction.date).toLocaleString()}
-                    Type: ${isSender ? 'Envoi' : 'Réception'}
-                    ${isSender ? 'Destinataire' : 'Expéditeur'}: ${isSender ? transaction.recipient : transaction.sender}
-                    ${isSender ? 'Tél. Destinataire' : 'Email Expéditeur'}: ${isSender ? transaction.recipientPhone : transaction.senderEmail}
-                    Montant: ${transaction.amount.toLocaleString()} FCFA
-                    Frais: ${(transaction.fees || 0).toLocaleString()} FCFA
-                    Statut: ${getStatusText(transaction.status)}
-                    ${transaction.updatedAt ? `Dernière mise à jour: ${new Date(transaction.updatedAt).toLocaleString()}` : ''}
-                `);
+        function voirDetails(id) {
+            const transaction = transactions.find(t => t._id === id);
+            if (transaction) {
+                const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+                document.getElementById('modalDate').textContent = new Date(transaction.date).toLocaleString();
+                document.getElementById('modalPays').textContent = transaction.pays;
+                document.getElementById('modalMontant').textContent = transaction.montant.toLocaleString() + ' FCFA';
+                document.getElementById('modalTotal').textContent = transaction.total.toLocaleString() + ' FCFA';
+                document.getElementById('modalOperateur').textContent = transaction.operateur;
+                document.getElementById('modalNumero').textContent = transaction.numero;
+                document.getElementById('modalNom').textContent = transaction.nom;
+                document.getElementById('modalStatut').textContent = transaction.statut;
+                document.getElementById('modalStatut').className = `badge ${getStatusBadgeClass(transaction.statut)}`;
+                modal.show();
             }
         }
 
-        // Gestion des filtres
-        document.getElementById('statusFilter').addEventListener('change', loadTransactions);
-        document.getElementById('dateFilter').addEventListener('change', loadTransactions);
-        document.getElementById('amountFilter').addEventListener('input', loadTransactions);
+        // Fonction pour filtrer les transactions
+        function filtrerTransactions() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const statut = document.getElementById('filterStatut').value;
+            const date = document.getElementById('filterDate').value;
 
-        // Charger les transactions au chargement de la page
-        loadTransactions();
+            const filtrees = transactions.filter(t => {
+                const matchesSearch = !search || 
+                    t.nom.toLowerCase().includes(search) || 
+                    t.numero.includes(search);
+                
+                const matchesStatut = !statut || t.statut === statut;
+                
+                const matchesDate = !date || new Date(t.date).toLocaleDateString() === new Date(date).toLocaleDateString();
+
+                return matchesSearch && matchesStatut && matchesDate;
+            });
+
+            afficherTransactions(filtrees);
+        }
+
+        // Fonction pour rafraîchir les transactions toutes les 30 secondes
+        function demarrerRafraichissement() {
+            setInterval(chargerTransactions, 30000);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Vérifier si l'utilisateur est connecté
+            const userEmail = localStorage.getItem('userEmail');
+            if (!userEmail) {
+                window.location.href = 'connexion.html';
+                return;
+            }
+
+            // Afficher l'avatar de l'utilisateur
+            const userName = localStorage.getItem('userName');
+            const avatar = document.getElementById('userAvatar');
+            if (userName) {
+                avatar.textContent = userName.charAt(0).toUpperCase();
+            }
+
+            // Charger les transactions
+            chargerTransactions();
+            
+            // Démarrer le rafraîchissement automatique
+            demarrerRafraichissement();
+
+            // Ajouter les écouteurs d'événements pour les filtres
+            document.getElementById('searchInput').addEventListener('input', filtrerTransactions);
+            document.getElementById('filterStatut').addEventListener('change', filtrerTransactions);
+            document.getElementById('filterDate').addEventListener('change', filtrerTransactions);
+
+            // Gestion de la déconnexion
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                window.location.href = 'index.html';
+            });
+        });
+
+        // Fonction pour afficher les notifications
+        function showToast(message) {
+            const toastEl = document.getElementById("toast");
+            const toastMsg = document.getElementById("toastMsg");
+            toastMsg.textContent = message;
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
     </script>
 </body>
 </html> 
