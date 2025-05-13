@@ -30,6 +30,13 @@ app.use((req, res, next) => {
   const origin = req.headers.origin;
   console.log('Origin de la requête:', origin);
   
+  // Si l'origine est undefined (requête directe) ou si c'est une requête statique
+  if (!origin || req.path.startsWith('/public/') || req.path.endsWith('.html')) {
+    console.log('Requête directe ou statique détectée');
+    next();
+    return;
+  }
+  
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     console.log('Origin autorisé:', origin);
